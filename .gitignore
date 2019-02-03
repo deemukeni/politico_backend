@@ -1,1 +1,3 @@
-politico-env
+.vscode
+__pycache__/
+*.pyc
