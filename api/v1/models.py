@@ -38,6 +38,14 @@ class Party:
                 break
         return single_party
 
+    @classmethod
+    def delete_party(cls, id):
+        """
+        update a political party
+        """
+        party = Party.get_party_by_id(id)
+        PARTIES.remove(party)
+
     def to_json(self):
         """
         convert from object to dictionary
