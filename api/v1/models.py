@@ -21,6 +21,23 @@ class Party:
                 return party
         return None
 
+    @classmethod
+    def get_all_parties(cls):
+        parties = []
+        for party in PARTIES:
+            # store as dictionaries
+            parties.append(party.to_json())
+        return parties
+    
+    @classmethod
+    def get_party_by_id(cls, id):
+        single_party = None
+        for party in PARTIES:
+            if party.id == id:
+                single_party = party
+                break
+        return single_party
+
     def to_json(self):
         """
         convert from object to dictionary

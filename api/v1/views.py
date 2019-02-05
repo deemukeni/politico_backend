@@ -44,3 +44,28 @@ def create_party():
     resp.status_code = 201
     return resp
 
+@bp.route("/parties", methods=["GET"])
+def get_parties():
+    parties = Party.get_all_parties()
+    if len(parties) == 0:
+        # no parties were found
+        resp = jsonify({"status": 404, "data": parties, "message": "There are no parties."})
+        resp.status_code = 404
+        return resp
+    else:
+        resp = jsonify({"status": 200, "data": parties, "message": "Parties fetched successfully."})
+        resp.status_code = 200
+        return resp
+
+@bp.route("/parties/<int:id>", methods=["GET"])
+def get_single_party(id):
+    party = Party.get_party_by_id(id)
+    if party:
+        # if party is found
+        resp = jsonify({"status": 200, "data": party.to_json(), "message": "Party fetched successfully."})
+        resp.status_code = 200
+        return resp
+    else:
+        resp = jsonify({"status": 404, "data": party, "message": "Party not found."})
+        resp.status_code = 200
+        return resp
