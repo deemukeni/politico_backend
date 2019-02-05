@@ -69,3 +69,17 @@ def get_single_party(id):
         resp = jsonify({"status": 404, "data": party, "message": "Party not found."})
         resp.status_code = 200
         return resp
+
+@bp.route("/parties/<int:id>", methods=["DELETE"])
+def delete_party(id):
+    party = Party.get_party_by_id(id)
+    if party:
+        # delete retrieved party
+        Party.delete_party(id)
+        resp = jsonify({"status": 200, "message": "Party deleted sucessfully."})
+        resp.status_code = 200
+        return resp
+    else:
+        resp = jsonify({"status": 404, "message": "Delete failed. Party not found."})
+        resp.status_code = 404
+        return resp
