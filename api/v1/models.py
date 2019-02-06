@@ -91,6 +91,12 @@ class Office:
                 break
         return single_office
 
+    @classmethod
+    def delete_office(cls, id):
+        office = Office.get_office_by_id(id)
+        OFFICES.remove(office)
+
+
     def to_json(self):
         """
         convert from object to dictionary
