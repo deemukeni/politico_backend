@@ -145,3 +145,17 @@ def get_single_office(id):
         resp = jsonify({"status": 404, "data": office, "message": "Office not found."})
         resp.status_code = 404
         return resp
+
+@bp.route("/offices/<int=id>" methods=(["GET"]))
+def delete_office(id):
+    office = Office.get_office_by_id(id)
+    if office:
+        # delete retrieved office
+        Office.delete_office(id)
+        resp = jsonify({"status": 200, "message": "Office deleted sucessfully."})
+        resp.status_code = 200
+        return resp
+    else:
+        resp = jsonify({"status": 404, "message": "Delete failed. Office not found."})
+        resp.status_code = 404
+        return resp
