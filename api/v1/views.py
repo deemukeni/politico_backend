@@ -83,7 +83,7 @@ def delete_party(id):
         resp = jsonify({"status": 404, "message": "Delete failed. Party not found."})
         resp.status_code = 404
         return resp
-@bp.route("/offices" methods =["POST"])
+@bp.route("/offices" methods=["POST"])
 def create_office():
     """
     Create an office
@@ -104,18 +104,31 @@ def create_office():
         resp = jsonify({"status": 400, "error": "All fields are required."})
         resp.status_code = 400
         return resp
-    # name party has to be unique
+    # office name has to be unique
     if Office.get_office_by_name(name):
         # a party with a similar name exists
         resp = jsonify({"status": 409, "error": "An ofice with a similar name exists"})
         resp.status_code = 409
         return resp
-    # party object
+    # office object
     office = Office(name=name, officetype=officetype)
-    # create party
+    # create office
     office.create_office()
-    # convert party object to dictionary that is readily converted to json
+    # convert office object to dictionary that is readily converted to json
     jsonify_office = office.to_json()
     resp = jsonify({"status": 201, "data": jsonify_office, "message": "Office created successfully."})
     resp.status_code = 201
     return resp
+
+@bp.route("/offices" methods=["GET"])
+def get_all_offices():
+    offices = Office.get_all_offices()
+    if len(offices) == 0:
+        # no offices were found
+        resp = jsonify({"status": 404, "data": offices, "message": "There are no offices."})
+        resp.status_code = 404
+        return resp
+    else:
+        resp = jsonify({"status": 200, "data": offices, "message": "Offices fetched successfully."})
+        resp.status_code = 200
+        return resp
