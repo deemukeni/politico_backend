@@ -67,22 +67,21 @@ class Party:
 
 class Office:
     def __init__(self, officetype, name):
-        self.id = id
+        self.id = len(OFFICES) + 1
         self.officetype = officetype
         self.name =name
-    
     
     def create_office(self):
         OFFICES.append(self)
         print("Offices: ", OFFICES )
 
+    @classmethod
+    def get_all_offices(cls):
+        offices = []
+        for office in OFFICES:
+            offices.append(office.to_json())
+        return offices
 
-    # @classmethod
-    # def get_all_offices():
-
-
-    
-    
     def to_json(self):
         """
         convert from object to dictionary
@@ -90,8 +89,5 @@ class Office:
         """
         return {
             "officetype": self.officetype,
-            "name": self.name,
-            
+            "name": self.name
         }
-
-    
