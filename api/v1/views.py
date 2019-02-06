@@ -67,7 +67,7 @@ def get_single_party(id):
         return resp
     else:
         resp = jsonify({"status": 404, "data": party, "message": "Party not found."})
-        resp.status_code = 200
+        resp.status_code = 404
         return resp
 
 @bp.route("/parties/<int:id>", methods=["DELETE"])
@@ -131,4 +131,17 @@ def get_all_offices():
     else:
         resp = jsonify({"status": 200, "data": offices, "message": "Offices fetched successfully."})
         resp.status_code = 200
+        return resp
+
+@bp.route("/offices/<int=id>" methods=["GET"])
+def get_single_office(id):
+    office = Office.get_office_by_id(id)
+    if office:
+        # if office is found
+        resp = jsonify({"status": 200, "data": office.to_json(), "message": "Office fetched successfully."})
+        resp.status_code = 200
+        return resp
+    else:
+        resp = jsonify({"status": 404, "data": office, "message": "Office not found."})
+        resp.status_code = 404
         return resp
