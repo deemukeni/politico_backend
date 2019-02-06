@@ -82,6 +82,15 @@ class Office:
             offices.append(office.to_json())
         return offices
 
+    @classmethod
+    def get_office_by_id(cls , id):
+        single_office = None
+        for office in OFFICES:
+            if office.id == id:
+                single_office = office
+                break
+        return single_office
+
     def to_json(self):
         """
         convert from object to dictionary
