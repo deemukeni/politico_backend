@@ -6,6 +6,7 @@ class DevelopmentConfig(BaseConfig):
 
 class TestingConfig(BaseConfig):
     DEBUG = True
+    TESTING = True
 
 app_configurations = {
     "development": DevelopmentConfig,

@@ -1,6 +1,7 @@
 # store app models
 # a list of party objects
 PARTIES = []
+# list of all available offices that were created
 OFFICES = []
 
 class Party:
@@ -17,6 +18,7 @@ class Party:
     
     @classmethod
     def get_party_by_name(cls, name):
+        #loop through the PARTIES
         for party in PARTIES:
             if party.name == name:
                 return party
@@ -66,14 +68,23 @@ class Party:
 
 
 class Office:
-    def __init__(self, officetype, name):
+    def __init__(self, office_type, name):
         self.id = len(OFFICES) + 1
-        self.officetype = officetype
+        self.office_type = office_type
         self.name =name
     
     def create_office(self):
         OFFICES.append(self)
         print("Offices: ", OFFICES )
+
+    @classmethod
+    def get_office_by_name(cls, name):
+        #loop through the PARTIES
+        for office in OFFICES:
+            if office.name == name:
+                return office
+        return None
+
 
     @classmethod
     def get_all_offices(cls):
@@ -95,6 +106,8 @@ class Office:
     def delete_office(cls, id):
         office = Office.get_office_by_id(id)
         OFFICES.remove(office)
+    
+
 
 
     def to_json(self):
@@ -103,6 +116,6 @@ class Office:
         for easy rendering as json response
         """
         return {
-            "officetype": self.officetype,
+            "office_type": self.office_type,
             "name": self.name
         }
