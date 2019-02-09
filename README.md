@@ -11,8 +11,6 @@ while building trust in the process through transparency.
 The repo for the frontend is available at https://github.com/deemukeni/politico_backend
 
 
-API Documentation https://documenter.getpostman.com/view/6135035/RznLGw8a
-
 Project API demo is hosted on Heroku
 
 ## Prerequisites
