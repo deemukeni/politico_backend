@@ -3,6 +3,8 @@
 PARTIES = []
 # list of all available offices that were created
 OFFICES = []
+#list of all users
+USERS = []
 
 class Party:
     def __init__(self, name, hqaddress, logo_url):
@@ -14,7 +16,6 @@ class Party:
     def create_party(self):
         # save party to store
         PARTIES.append(self)
-        print("PARTIES => ", PARTIES)
     
     @classmethod
     def get_party_by_name(cls, name):
@@ -118,4 +119,49 @@ class Office:
         return {
             "office_type": self.office_type,
             "name": self.name
+        }
+
+class User:
+    def __init__(self, first_name, last_name, other_name, email, phone_number, passport_url):
+        self.id = len(USERS) + 1
+        self.first_name = first_name
+        self.last_name = last_name
+        self.other_name = other_name
+        self.email = email
+        self.phone_number = phone_number
+        self.passport_url = passport_url
+        # by default a user is not admin
+        # requires to be promoted to be admin
+        self.is_admin = False
+
+    def create_user(self):
+        USERS.append(self)
+
+    @classmethod
+    def get_user_by_phone_number(cls, phone_number):
+        for user in USERS:
+            if user.phone_number == phone_number:
+                return user
+        return None
+
+    @classmethod
+    def  get_user_by_email(cls, email):
+        for user in USERS:
+            if user.email == email:
+                return user
+        return None
+
+    def to_json(self):
+        """
+        convert from object to dictionary
+        for easy rendering as json response
+        """
+        return {
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "other_name":  self.other_name,
+            "email": self.email,
+            "phone_number": self.phone_number,
+            "passport_url": self.passport_url
+            
         }
