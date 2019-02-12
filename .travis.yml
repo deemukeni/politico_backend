@@ -8,3 +8,6 @@ install:
 
 script:
   - pytest --cov=api
+
+after_success:
+  - coveralls
