@@ -59,7 +59,6 @@ class PartiesV1TestCase(unittest.TestCase):
     def test_create_party_successfully(self):
         # data payload - data sent by the user
         response = self.client.post("/api/v1/parties", data=json.dumps(self.party), content_type='application/json')
-        print(">>>> ", json.loads(response.data))
         self.assertEqual(json.loads(response.data)["message"], "Party created successfully.")
         self.assertEqual(response.status_code, 201)
 
@@ -94,7 +93,6 @@ class PartiesV1TestCase(unittest.TestCase):
 
     def test_fetch_single_party_successfully(self):
         response = self.client.post("/api/v1/parties", data=json.dumps(self.party), content_type='application/json')
-        print(">>>> ", json.loads(response.data))
         self.assertEqual(json.loads(response.data)["message"], "Party created successfully.")
         self.assertEqual(response.status_code, 201)
         # 
@@ -116,12 +114,10 @@ class PartiesV1TestCase(unittest.TestCase):
 
         response = self.client.delete("/api/v1/parties/1", content_type="application/json")
         self.assertEqual(json.loads(response.data)["message"], "Party deleted sucessfully.")
-        # self.
         
     def test_create_office_successfully(self):
         # data payload - data sent by the user
         response = self.client.post("/api/v1/offices", data=json.dumps(self.office), content_type='application/json')
-        print(">>>>>", json.loads(response.data))
         self.assertEqual(json.loads(response.data)["message"], "Office created successfully.")
         self.assertEqual(response.status_code, 201)
     

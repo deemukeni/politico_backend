@@ -2,6 +2,7 @@
 from flask import Flask, Blueprint, jsonify, request
 
 from api.v1.models import Party, Office, User
+from helpers import required_fields
 
 # a list of all the parties where, after they are created, they are stored.
 PARTIES = []
@@ -26,7 +27,7 @@ def create_party():
         resp.status_code = 400
         return resp
     # does not accept empty fields. if the users request is empty
-    if name == "" or hqaddress == "" or logo_url == "":
+    if required_fields(data, ["name", "hqaddress", "logo_url"]):
         resp = jsonify({"status": 400, "error": "All fields are required."})
         resp.status_code = 400
         return resp
@@ -103,7 +104,7 @@ def create_office():
         resp.status_code = 400
         return resp
     # does not accept empty fields
-    if office_type == "" or name == "":
+    if required_fields(data, ["office_type", "name"]):
         resp = jsonify({"status": 400, "error": "All fields are required."})
         resp.status_code = 400
         return resp
@@ -163,7 +164,7 @@ def delete_office(id):
         resp.status_code = 404
         return resp
 
-
+# User endpoints
 @bp.route("/users", methods=(["POST"]))
 def create_user():
     data = request.get_json()
@@ -181,7 +182,7 @@ def create_user():
         resp.status_code = 400
         return resp
     # does not accept empty fields. if the users request is empty
-    if first_name == "" or last_name == "" or other_name == "" or email == "" or phone_number == "" or passport_url == "":
+    if required_fields(data, ["first_name", "last_name", "other_name", "email", "phone_number", "passport_url"]):
         resp = jsonify({"status": 400, "error": "All fields are required."})
         resp.status_code = 400
         return resp

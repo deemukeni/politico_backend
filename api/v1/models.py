@@ -76,7 +76,6 @@ class Office:
     
     def create_office(self):
         OFFICES.append(self)
-        print("Offices: ", OFFICES )
 
     @classmethod
     def get_office_by_name(cls, name):
