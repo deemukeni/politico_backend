@@ -1,13 +1,13 @@
 # write endpoints py
 from flask import Flask, Blueprint, jsonify, request
 
-from api.v1.models import Party, Office, User
+from api.v2.models import Party, Office, User
 from helpers import required_fields
 
 # a list of all the parties where, after they are created, they are stored.
 PARTIES = []
 # use blueprint to version api endpoints
-bp = Blueprint("apiv1", __name__, url_prefix="/api/v1")
+bp = Blueprint("apiv2", __name__, url_prefix="/api/v2")
 # for versioning : evry route will have /api/v1 prefixon it
 
 
