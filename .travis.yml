@@ -6,6 +6,12 @@ python:
 install:
   - pip install -r requirements.txt
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c  'CREATE DATABASE politico_test_db;' -U postgres 
+
 script:
   - pytest --cov=api
 

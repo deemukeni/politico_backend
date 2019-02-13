@@ -1,11 +1,11 @@
 #imports
 import unittest
 
-from api.v1 import create_app
-from api.v1.models import Party, Office, PARTIES, OFFICES
+from api.v2 import create_app
+from api.v2.models.models import Party, Office, PARTIES, OFFICES
 
 
-class PartiesModelsV1TestCase(unittest.TestCase):
+class PartiesModelsv2TestCase(unittest.TestCase):
     def setUp(self):
         """
         create testing app
