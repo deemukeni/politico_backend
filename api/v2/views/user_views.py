@@ -3,12 +3,11 @@ from flask import Flask, Blueprint, jsonify, request
 
 from api.v2.models.models import User
 from api.v2.utils import helpers
+from api.v2.views import bp
 
 # a list of all the parties where, after they are created, they are stored.
 PARTIES = []
-# use blueprint to version api endpoints
-bp = Blueprint("apiv2", __name__, url_prefix="/api/v2")
-# for versioning : evry route will have /api/v1 prefixon it
+
 
 # User endpoints
 @bp.route("/users", methods=(["POST"]))
