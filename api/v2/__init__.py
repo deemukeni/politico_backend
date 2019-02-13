@@ -2,7 +2,7 @@
 from flask import Flask, Blueprint
 
 from config import app_configurations
-from api.v2.views import bp
+from api.v2.views.views import bp
 
 
 def create_app(environment):

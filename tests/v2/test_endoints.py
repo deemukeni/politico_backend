@@ -4,7 +4,7 @@ import unittest
 import json
 
 from api.v2 import create_app
-from api.v2.models import PARTIES, OFFICES
+from api.v2.models.models import PARTIES, OFFICES
 
 
 class Partiesv2TestCase(unittest.TestCase):

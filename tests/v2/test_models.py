@@ -2,7 +2,7 @@
 import unittest
 
 from api.v2 import create_app
-from api.v2.models import Party, Office, PARTIES, OFFICES
+from api.v2.models.models import Party, Office, PARTIES, OFFICES
 
 
 class PartiesModelsv2TestCase(unittest.TestCase):
