@@ -87,3 +87,20 @@ def initiate_database():
     except Exception as error:
         print("\n Something went wrong: {}".format(error))
 
+def select_from_database(query):
+    conn, cursor = connect_db()
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    conn.commit()
+    conn.close()
+    return rows
+
+def insert_to_db(query):
+    try:
+        conn, cursor = connect_db()
+        cursor.execute(query)
+        conn.commit()
+        conn.close()
+    except psycopg2.Error as error:
+        print (error)
