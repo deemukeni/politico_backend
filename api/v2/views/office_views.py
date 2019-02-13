@@ -26,7 +26,7 @@ def create_office():
         resp.status_code = 400
         return resp
     # does not accept empty fields
-    if required_fields(data, ["office_type", "name"]):
+    if helpers.required_fields(data, ["office_type", "name"]):
         resp = jsonify({"status": 400, "error": "All fields are required."})
         resp.status_code = 400
         return resp

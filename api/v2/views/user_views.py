@@ -20,6 +20,7 @@ def create_user():
         email = data["email"]
         phone_number = data["phone_number"]
         passport_url = ["passport_url"]
+        password = ["password"]
 
     except KeyError:
         # enforce use of appropriate keys (tells user to enter the appropriate keys since the ones entered were wrong)
