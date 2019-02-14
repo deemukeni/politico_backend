@@ -26,7 +26,7 @@ class Partiesv2TestCase(unittest.TestCase):
                                 "last_name":"dzvfd",
                                 "username":"xvxdfv",
                                 "email":"your@them.com",
-                                "phone_number":"dsgfsk",
+                                "phone_number":"9996857",
                                 "passport_url":"dsfdd",
                                 "password":"Aaaaaaaaa",
                                 "confirm_password":"Aaaaaaaaa"
