@@ -47,7 +47,7 @@ def token_required(f):
                 if "token_Bearer" in request.headers:
                         token = request.headers['token_Bearer']
                 if not token:
-                        abort(make_response(jsonify({'error':'Token is missing', "status":401}, 401)))
+                        abort(make_response(jsonify({'error':'Token is missing', "status":401}), 401))
 
                 user = None
 

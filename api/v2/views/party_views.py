@@ -65,7 +65,7 @@ def get_parties(user):
 
 @bp.route("/parties/<int:id>", methods=["GET"])
 @token_required
-def get_single_party(id, user):
+def get_single_party(user, id):
     party = Party.get_party_by_id(id)
     if party:
         # if party is found
@@ -80,7 +80,7 @@ def get_single_party(id, user):
 
 @bp.route("/parties/<int:id>", methods=["DELETE"])
 @token_required
-def delete_party(id, user):
+def delete_party(user, id):
     party = Party.get_party_by_id(id)
     if party:
         # after the getting the specific party by its id, delete retrieved party

@@ -4,7 +4,7 @@ from flask import Flask, Blueprint, jsonify, request
 from api.v2.models.models import Office
 from api.v2.utils import helpers
 from api.v2.views import bp
-
+from api.v2.utils.helpers import token_required
 # a list of all the parties where, after they are created, they are stored.
 PARTIES = []
 
@@ -49,7 +49,7 @@ def create_office(user):
 
 @bp.route("/offices", methods=["GET"])
 @token_required
-def get_all_offices():
+def get_all_offices(user):
     offices = Office.get_all_offices()
     if len(offices) == 0:
         # no offices were found
@@ -63,7 +63,7 @@ def get_all_offices():
 
 @bp.route("/offices/<int:id>", methods=["GET"])
 @token_required
-def get_single_office(id,user):
+def get_single_office(user, id):
     office = Office.get_office_by_id(id)
     if office:
         # if office is found
@@ -77,7 +77,7 @@ def get_single_office(id,user):
 
 @bp.route("/offices/<int:id>", methods=(["GET"]))
 @token_required
-def delete_office(id, user):
+def delete_office(user, id):
     office = Office.get_office_by_id(id)
     if office:
         # delete retrieved office

@@ -17,8 +17,8 @@ PARTIES = []
 KEY = os.getenv("SECRET_KEY")
 
 # User endpoints
-@bp.route("/users", methods=(["POST"])
-def create_user(user):
+@bp.route("/users", methods=(["POST"]))
+def create_user():
     data = request.get_json()
     try:
         first_name = data["first_name"]
@@ -49,9 +49,16 @@ def create_user(user):
     #user email has to be uique
     if User.get_user_by_username(username):
         # a user with a similar email exists
+        resp = jsonify({"status": 409, "error": "A user with a similar username exists"})
+        resp.status_code = 409
+        return resp
+
+    if User.get_user_by_email(email):
+        # a user with a similar phone number exists
         resp = jsonify({"status": 409, "error": "A user with a similar email exists"})
         resp.status_code = 409
         return resp
+
     #user phone number has to be uique
     if User.get_user_by_phone_number(phone_number):
         # a user with a similar phone number exists
@@ -60,8 +67,8 @@ def create_user(user):
         return resp
     
     # user object
-    print(password)
-    user = User(first_name = first_name, last_name = last_name, username = username, email = email, phone_number = phone_number, passport_url = passport_url, password = password)
+    user = User(first_name = first_name, last_name = last_name, username = username,
+        email = email, phone_number = phone_number, passport_url = passport_url, password = password)
     # call function that creates user
     user.create_user()
     # convert user object to dictionary that is readily converted to json
