@@ -1,5 +1,13 @@
 import re
-from flask import abort, make_response, jsonify
+import os
+import jwt
+from functools import wraps
+
+from flask import abort, make_response, jsonify, request
+
+from api.v2.models.models import User
+
+KEY = os.getenv('SECRET_KEY')
 
 def required_fields(data, fields):
     """
@@ -30,3 +38,34 @@ def validate_names(data):
                 if key in ["first_name", "last_name", "other_name"]:
                         if not value.isalpha():
                                 abort(make_response(jsonify({"error" : "use letters in {}".format(key)})))
+
+
+def token_required(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+                token = None
+                if "token_Bearer" in request.headers:
+                        token = request.headers['token_Bearer']
+                if not token:
+                        abort(make_response(jsonify({'error':'Token is missing', "status":401}), 401))
+
+                user = None
+
+                try:
+                        data = jwt.decode(token, KEY)
+                        user = data['username']
+                        username = User.get_user_by_username(user)
+
+                except:
+                        abort(make_response(jsonify({'error':"token is invalid", "status":401}), 401))
+
+                return f(user, *args, **kwargs)
+        return decorated
+
+def decode_token():
+        token = request.headers['token_bearer']
+
+        data = jwt.decode(token, KEY)
+
+        username  = data['username']
+        return username

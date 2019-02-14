@@ -1,3 +1,5 @@
+from api.v2.models import database
+
 # store app models
 # a list of party objects
 PARTIES = []
@@ -121,11 +123,10 @@ class Office:
         }
 
 class User:
-    def __init__(self, first_name, last_name, other_name, email, phone_number, passport_url, password):
-        self.id = len(USERS) + 1
+    def __init__(self, first_name, last_name, username, email, phone_number, passport_url, password):
         self.first_name = first_name
         self.last_name = last_name
-        self.other_name = other_name
+        self.username = username
         self.email = email
         self.phone_number = phone_number
         self.passport_url = passport_url
@@ -135,29 +136,60 @@ class User:
         self.is_admin = False
 
     def create_user(self):
-        USERS.append(self)
+
+        query = """
+        INSERT INTO users(firstname, lastname, username, email, password, phoneNumber, passport_url) VALUES(
+            '{}', '{}', '{}', '{}', '{}', '{}', '{}'
+        )""".format(self.first_name, self.last_name, self.username, self.email, self.password, self.phone_number, self.passport_url )
+        
+
+        database.insert_to_db(query)
 
     @classmethod
     def get_user_by_phone_number(cls, phone_number):
-        for user in USERS:
-            if user.phone_number == phone_number:
-                return user
-        return None
+
+        query = """
+        SELECT phoneNumber FROM users WHERE users.phoneNumber = '{}'
+        """.format(phone_number)
+
+        phone = database.select_from_database(query)
+        return phone
+
+    @classmethod
+    def  get_user_by_username(cls, username):
+
+        query = """
+        SELECT * FROM users WHERE users.username = '{}'
+        """.format(username)
+
+        user = database.select_from_database(query)
+        # try:
+        #     user = user[0][1]
+
+        #     print(user)
+        # except:
+        #     print("No user posted yet")
+        return user
 
     @classmethod
     def  get_user_by_email(cls, email):
-        for user in USERS:
-            if user.email == email:
-                return user
-        return None
+
+        query = """
+        SELECT email FROM users WHERE users.email = '{}'
+        """.format(email)
+
+        email = database.select_from_database(query)
+        return email
 
     @staticmethod
     def get_user_by_password(password):
-        exists= None
-        for user in USERS:
-            if user.password == password:
-                exists = user
-        return  exists 
+
+        query = """
+        SELECT password FROM users WHERE users.password = '{}'
+        """.format(password)
+
+        password = database.select_from_database(query)
+        return password
     
     def to_json(self):
         """
@@ -167,7 +199,7 @@ class User:
         return {
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "other_name":  self.other_name,
+            "username":  self.username,
             "email": self.email,
             "phone_number": self.phone_number,
             "passport_url": self.passport_url

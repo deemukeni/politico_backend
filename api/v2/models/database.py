@@ -39,7 +39,6 @@ def create_tables():
         user_id SERIAL PRIMARY KEY,
         firstname VARCHAR (24) NOT NULL,
         lastname VARCHAR (24) NOT NULL,
-        othername VARCHAR (24) NOT NULL,
         username VARCHAR (24) NOT NULL,
         email VARCHAR (24) NOT NULL,
         password VARCHAR (24) NOT NULL,
@@ -68,6 +67,28 @@ def create_tables():
     return [parties_table_query,users_table_query,offices_table_query,candidates_table_query]
 
 
+def drop_tables():
+    """
+    Delete tables
+    """
+    drop_users_query="""
+    DROP TABLE IF EXISTS users
+    """
+
+    drop_parties_query="""
+    DROP TABLE IF EXISTS parties
+    """
+
+    drop_offices_query="""
+    DROP TABLE IF EXISTS offices
+    """
+
+    drop_candidates_query="""
+    DROP TABLE IF EXISTS candidates
+    """
+
+    return [drop_users_query, drop_parties_query, drop_offices_query, drop_candidates_query]
+
 def initiate_database():
     """
     Initiates database connection and create tables
@@ -75,7 +96,7 @@ def initiate_database():
     try:
         conn, cursor = connect_db()
         i = 0
-        queries = create_tables()
+        queries = drop_tables() + create_tables()
 
         while i != len(queries):
             query = queries[i]
