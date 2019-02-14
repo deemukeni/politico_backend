@@ -121,11 +121,11 @@ class Office:
         }
 
 class User:
-    def __init__(self, first_name, last_name, other_name, email, phone_number, passport_url, password):
+    def __init__(self, first_name, last_name, username, email, phone_number, passport_url, password):
         self.id = len(USERS) + 1
         self.first_name = first_name
         self.last_name = last_name
-        self.other_name = other_name
+        self.username = username
         self.email = email
         self.phone_number = phone_number
         self.passport_url = passport_url
@@ -145,10 +145,10 @@ class User:
         return None
 
     @classmethod
-    def  get_user_by_email(cls, email):
+    def  get_user_by_username(cls, username):
         for user in USERS:
-            if user.email == email:
-                return user
+            if user.username == username:
+                return user.to_json()
         return None
 
     @staticmethod
@@ -167,7 +167,7 @@ class User:
         return {
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "other_name":  self.other_name,
+            "username":  self.username,
             "email": self.email,
             "phone_number": self.phone_number,
             "passport_url": self.passport_url

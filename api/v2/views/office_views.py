@@ -11,7 +11,8 @@ PARTIES = []
 
 
 @bp.route("/offices", methods=["POST"])
-def create_office():
+@token_required
+def create_office(user):
     """
     Create an office
 
@@ -47,6 +48,7 @@ def create_office():
     return resp
 
 @bp.route("/offices", methods=["GET"])
+@token_required
 def get_all_offices():
     offices = Office.get_all_offices()
     if len(offices) == 0:
@@ -60,7 +62,8 @@ def get_all_offices():
         return resp
 
 @bp.route("/offices/<int:id>", methods=["GET"])
-def get_single_office(id):
+@token_required
+def get_single_office(id,user):
     office = Office.get_office_by_id(id)
     if office:
         # if office is found
@@ -73,7 +76,8 @@ def get_single_office(id):
         return resp
 
 @bp.route("/offices/<int:id>", methods=(["GET"]))
-def delete_office(id):
+@token_required
+def delete_office(id, user):
     office = Office.get_office_by_id(id)
     if office:
         # delete retrieved office

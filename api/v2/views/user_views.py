@@ -1,7 +1,11 @@
-from flask import abort,make_response,jsonify
-
 # write endpoints py
-from flask import Flask, Blueprint, jsonify, request
+import datetime
+import os
+import json
+
+
+from flask import Flask, jsonify, request, abort, make_response
+import jwt
 
 from api.v2.models.models import User
 from api.v2.utils import helpers
@@ -10,15 +14,16 @@ from api.v2.views import bp
 # a list of all the parties where, after they are created, they are stored.
 PARTIES = []
 
+KEY = os.getenv("SECRET_KEY")
 
 # User endpoints
-@bp.route("/users", methods=(["POST"]))
-def create_user():
+@bp.route("/users", methods=(["POST"])
+def create_user(user):
     data = request.get_json()
     try:
         first_name = data["first_name"]
         last_name = data["last_name"]
-        other_name = data["other_name"]
+        username = data["username"]
         email = data["email"]
         phone_number = data["phone_number"]
         passport_url = data["passport_url"]
@@ -32,7 +37,7 @@ def create_user():
         return resp
     helpers.check_whitespace(data)
     # does not accept empty fields. if the users request is empty
-    if helpers.required_fields(data, ["first_name", "last_name", "other_name", "email", "phone_number", "passport_url"]):
+    if helpers.required_fields(data, ["first_name", "last_name", "username", "email", "phone_number", "passport_url"]):
         resp = jsonify({"status": 400, "error": "All fields are required."})
         resp.status_code = 400
         return resp
@@ -42,7 +47,7 @@ def create_user():
     helpers.validate_email(email)
 
     #user email has to be uique
-    if User.get_user_by_email(email):
+    if User.get_user_by_username(username):
         # a user with a similar email exists
         resp = jsonify({"status": 409, "error": "A user with a similar email exists"})
         resp.status_code = 409
@@ -56,7 +61,7 @@ def create_user():
     
     # user object
     print(password)
-    user = User(first_name = first_name, last_name = last_name, other_name = other_name, email = email, phone_number = phone_number, passport_url = passport_url, password = password)
+    user = User(first_name = first_name, last_name = last_name, username = username, email = email, phone_number = phone_number, passport_url = passport_url, password = password)
     # call function that creates user
     user.create_user()
     # convert user object to dictionary that is readily converted to json
@@ -74,7 +79,7 @@ def create_user():
 def user_login():
     try:
         data=request.get_json()
-        email = data["email"]
+        username = data["username"]
         password = data["password"]
 
     except:
@@ -86,10 +91,10 @@ def user_login():
     
 
         
-    user = User.get_user_by_email(email)
+    user = User.get_user_by_username(username)
     if not user:
         return jsonify({"status": 400,
-                        "error":"email is incorrect"}), 400
+                        "error":"Username is incorrect"}), 400
 
     
 
@@ -98,6 +103,12 @@ def user_login():
         abort(make_response(jsonify({'status': 400,
                                         'error': "wrong password"}), 400))
 
-    return jsonify({"message":"Logged in successfully", "status":200, "token":"token"}),200
+    payload = {"username":username, 'exp':datetime.datetime.utcnow()+ datetime.timedelta(hours=5)}
+
+    token = jwt.encode(payload, KEY, algorithm='HS256')
+
+    token = token.decode('utf-8')
+
+    return jsonify({"message":"Logged in successfully", "status":200, "token":token}),200
 
        

@@ -4,6 +4,7 @@ from flask import Flask, Blueprint, jsonify, request
 from api.v2.models.models import Party
 from api.v2.utils import helpers
 from api.v2.views import bp
+from api.v2.utils.helpers import token_required
 
 # a list of all the parties where, after they are created, they are stored.
 PARTIES = []
@@ -11,7 +12,8 @@ PARTIES = []
 
 
 @bp.route("/parties", methods=["POST"])
-def create_party():
+@token_required
+def create_party(user):
     """
     create a political party
     """
@@ -48,7 +50,8 @@ def create_party():
 
 
 @bp.route("/parties", methods=["GET"])
-def get_parties():
+@token_required
+def get_parties(user):
     parties = Party.get_all_parties()
     if len(parties) == 0:
         # no parties were found
@@ -61,7 +64,8 @@ def get_parties():
         return resp
 
 @bp.route("/parties/<int:id>", methods=["GET"])
-def get_single_party(id):
+@token_required
+def get_single_party(id, user):
     party = Party.get_party_by_id(id)
     if party:
         # if party is found
@@ -75,7 +79,8 @@ def get_single_party(id):
         return resp
 
 @bp.route("/parties/<int:id>", methods=["DELETE"])
-def delete_party(id):
+@token_required
+def delete_party(id, user):
     party = Party.get_party_by_id(id)
     if party:
         # after the getting the specific party by its id, delete retrieved party
