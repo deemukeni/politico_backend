@@ -1,53 +1,51 @@
 from api.v2.models import database
-
-# store app models
-# a list of party objects
-PARTIES = []
-# list of all available offices that were created
-OFFICES = []
-#list of all users
-USERS = []
+import psycopg2
 
 class Party:
     def __init__(self, name, hqaddress, logo_url):
-        self.id = len(PARTIES) + 1
         self.name = name
         self.hqaddress = hqaddress
         self.logo_url = logo_url
     
     def create_party(self):
-        # save party to store
-        PARTIES.append(self)
-    
+        query = """
+        INSERT INTO parties(party_name, hqAddress, logo_url) VALUES(
+            '{}', '{}', '{}')
+        """.format(self.name, self.hqaddress, self.logo_url)
+        database.insert_to_db(query)
+
     @classmethod
     def get_party_by_name(cls, name):
-        #loop through the PARTIES
-        for party in PARTIES:
-            if party.name == name:
-                return party
-        return None
+        query = """
+        SELECT * FROM parties WHERE party_name='{}'
+        """.format(name)
+        user = database.select_from_database(query)
+        return user
 
     @classmethod
     def get_all_parties(cls):
-        parties = []
-        for party in PARTIES:
-            # store as dictionaries
-            parties.append(party.to_json())
-        return parties
-    
+        query="""
+        SELECT * FROM parties
+        """
+        parties = database.select_from_database(query)
+        parties_lst = []
+        for party in parties:
+            # convert party tuple to a dictionary - which is easily jsonified
+            parties_lst.append(Party.to_json(party))
+        return parties_lst
+
     @classmethod
     def get_party_by_id(cls, id):
-        single_party = None
-        for party in PARTIES:
-            if party.id == id:
-                single_party = party
-                break
-        return single_party
+        query=""" SELECT * FROM parties WHERE party_id='{}'
+        """.format(id)
+        party = database.select_from_database(query)
+        return Party.to_json(party[0])
 
-    """
-    add patch endpoint to update a party by id
-        dont forget!!!!!
-    """
+
+    # """
+    # add patch endpoint to update a party by id
+    #     dont forget!!!!!
+    # """
 
     @classmethod
     def delete_party(cls, id):
@@ -55,71 +53,102 @@ class Party:
         update a political party
         """
         party = Party.get_party_by_id(id)
-        PARTIES.remove(party)
 
-    
-    def to_json(self):
+        if party:
+            query="""
+            DELETE FROM parties WHERE id='{}' 
+            """.format(id)
+            try:
+                conn, cursor = database.connect_db()
+                conn.execute(query)
+                conn.commit()
+                conn.close()
+            except psycopg2.Error as error:
+                print (error)
+
+      
+
+    @classmethod
+    def to_json(self, party_row):
         """
         convert from object to dictionary
         for easy rendering as json response
         """
         return {
-            "name": self.name,
-            "hqaddress": self.hqaddress,
-            "logo_url": self.logo_url
+            "name": party_row[1],
+            "hqaddress": party_row[2],
+            "logo_url": party_row[3]
         }
 
 
 class Office:
     def __init__(self, office_type, name):
-        self.id = len(OFFICES) + 1
         self.office_type = office_type
         self.name =name
     
     def create_office(self):
-        OFFICES.append(self)
+        query = """
+        INSERT INTO offices(office_type, office_name) VALUES(
+            '{}', '{}')
+        """.format(self.office_type, self.name)
+        database.insert_to_db(query)
 
     @classmethod
     def get_office_by_name(cls, name):
-        #loop through the PARTIES
-        for office in OFFICES:
-            if office.name == name:
-                return office
-        return None
+        query = """
+        SELECT * FROM offices WHERE office_name='{}'
+        """.format(name)
+        user = database.select_from_database(query)
+        return user
 
 
     @classmethod
     def get_all_offices(cls):
-        offices = []
-        for office in OFFICES:
-            offices.append(office.to_json())
-        return offices
+        query="""
+        SELECT * FROM offices
+        """
+        offices = database.select_from_database(query)
+        offices_lst = []
+        for office in offices:
+            # convert party tuple to a dictionary - which is easily jsonified
+            offices_lst.append(Office.to_json(office))
+        return offices_lst
+
 
     @classmethod
-    def get_office_by_id(cls , id):
-        single_office = None
-        for office in OFFICES:
-            if office.id == id:
-                single_office = office
-                break
-        return single_office
+    def get_office_by_id(cls, id):
+        query=""" SELECT * FROM offices WHERE office_id='{}'
+        """.format(id)
+        office = database.select_from_database(query)
+        return Office.to_json(office[0])
 
     @classmethod
     def delete_office(cls, id):
         office = Office.get_office_by_id(id)
-        OFFICES.remove(office)
+        if office:
+            query="""
+            DELETE FROM offices WHERE id='{}' 
+            """.format(id)
+            try:
+                conn, cursor = database.connect_db()
+                conn.execute(query)
+                conn.commit()
+                conn.close()
+            except psycopg2.Error as error:
+                print (error)
     
 
 
-
-    def to_json(self):
+    @classmethod
+    def to_json(self, office_row):
         """
         convert from object to dictionary
         for easy rendering as json response
         """
         return {
-            "office_type": self.office_type,
-            "name": self.name
+            "office_id": office_row[0],
+            "office_type": office_row[1],
+            "office_name": office_row[2]
         }
 
 class User:
@@ -149,17 +178,17 @@ class User:
     def get_user_by_phone_number(cls, phone_number):
 
         query = """
-        SELECT phoneNumber FROM users WHERE users.phoneNumber = '{}'
+        SELECT * FROM users WHERE users.phoneNumber='{}'
         """.format(phone_number)
 
-        phone = database.select_from_database(query)
-        return phone
+        user = database.select_from_database(query)
+        return user
 
     @classmethod
     def  get_user_by_username(cls, username):
 
         query = """
-        SELECT * FROM users WHERE users.username = '{}'
+        SELECT * FROM users WHERE username='{}'
         """.format(username)
 
         user = database.select_from_database(query)
@@ -175,7 +204,7 @@ class User:
     def  get_user_by_email(cls, email):
 
         query = """
-        SELECT email FROM users WHERE users.email = '{}'
+        SELECT email FROM users WHERE users.email='{}'
         """.format(email)
 
         email = database.select_from_database(query)
@@ -185,23 +214,23 @@ class User:
     def get_user_by_password(password):
 
         query = """
-        SELECT password FROM users WHERE users.password = '{}'
+        SELECT password FROM users WHERE users.password='{}'
         """.format(password)
 
         password = database.select_from_database(query)
         return password
     
-    def to_json(self):
+    def to_json(self, user_row):
         """
         convert from object to dictionary
         for easy rendering as json response
         """
         return {
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "username":  self.username,
-            "email": self.email,
-            "phone_number": self.phone_number,
-            "passport_url": self.passport_url
-            
+            "id": user_row[0],
+            "first_name": user_row[1],
+            "last_name": user_row[2],
+            "username":  user_row[3],
+            "email": user_row[4],
+            "phone_number": user_row[6],
+            "passport_url": user_row[7]
         }

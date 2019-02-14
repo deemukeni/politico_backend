@@ -1,8 +1,10 @@
+# import os
 import os
 
 import psycopg2
 import sys
 
+# connects to the database as indicated in the .env file
 def connect_db():
     db_url=os.getenv("DATABASE_URL")
     conn= None
@@ -28,7 +30,6 @@ def create_tables():
     CREATE TABLE parties (
         party_id SERIAL PRIMARY KEY,
         party_name VARCHAR (24) NOT NULL,
-        party_leader VARCHAR (24) NOT NULL,
         hqAddress VARCHAR NOT NULL,
         logo_url VARCHAR NOT NULL
     )
@@ -96,7 +97,9 @@ def initiate_database():
     try:
         conn, cursor = connect_db()
         i = 0
-        queries = drop_tables() + create_tables()
+        # drop_tables is for clearing all the data from the data base.
+        # queries = drop_tables() + create_tables()
+        queries = create_tables()
 
         while i != len(queries):
             query = queries[i]
@@ -109,6 +112,9 @@ def initiate_database():
         print("\n Something went wrong: {}".format(error))
 
 def select_from_database(query):
+    """
+        function is for getting data from the database
+    """
     conn, cursor = connect_db()
     cursor.execute(query)
     rows = cursor.fetchall()
@@ -118,10 +124,13 @@ def select_from_database(query):
     return rows
 
 def insert_to_db(query):
+    """
+        function is for inserting or adding data into the database
+    """
     try:
         conn, cursor = connect_db()
         cursor.execute(query)
-        conn.commit()
+        conn.commit() # save
         conn.close()
     except psycopg2.Error as error:
         print (error)
