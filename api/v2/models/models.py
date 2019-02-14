@@ -121,7 +121,7 @@ class Office:
         }
 
 class User:
-    def __init__(self, first_name, last_name, other_name, email, phone_number, passport_url):
+    def __init__(self, first_name, last_name, other_name, email, phone_number, passport_url, password):
         self.id = len(USERS) + 1
         self.first_name = first_name
         self.last_name = last_name
@@ -129,6 +129,7 @@ class User:
         self.email = email
         self.phone_number = phone_number
         self.passport_url = passport_url
+        self.password = password
         # by default a user is not admin
         # requires to be promoted to be admin
         self.is_admin = False
@@ -150,6 +151,14 @@ class User:
                 return user
         return None
 
+    @staticmethod
+    def get_user_by_password(password):
+        exists= None
+        for user in USERS:
+            if user.password == password:
+                exists = user
+        return  exists 
+    
     def to_json(self):
         """
         convert from object to dictionary
