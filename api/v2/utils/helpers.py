@@ -23,7 +23,7 @@ def required_fields(data, fields):
 def check_whitespace(data):
         for key,values in data.items():
                 if not values.strip():
-                        abort(make_response(jsonify({"error" : "invalid input at {}" .format(key)})))
+                        abort(make_response(jsonify({"error" : "invalid input at {}" .format(key)}), 400))
 
 def validate_email(email):
         if not re.match("^([a-zA-Z0-9_\-]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$", email):
@@ -52,7 +52,8 @@ def token_required(f):
                 user = None
 
                 try:
-                        data = jwt.decode(token, KEY)
+                        data = jwt.decode(token, KEY, algorithms="HS256")
+                        print(data)
                         user = data['username']
                         username = User.get_user_by_username(user)
 
