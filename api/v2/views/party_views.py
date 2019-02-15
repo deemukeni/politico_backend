@@ -9,8 +9,6 @@ from api.v2.utils.helpers import token_required
 # a list of all the parties where, after they are created, they are stored.
 PARTIES = []
 
-
-
 @bp.route("/parties", methods=["POST"])
 @token_required
 def create_party(user):
@@ -27,6 +25,7 @@ def create_party(user):
         resp = jsonify({"status": 400, "error": "Use appropriate keys."})
         resp.status_code = 400
         return resp
+    helpers.check_whitespace(data)
     # does not accept empty fields. if the users request is empty
     if helpers.required_fields(data, ["name", "hqaddress", "logo_url"]):
         resp = jsonify({"status": 400, "error": "All fields are required."})
@@ -38,12 +37,22 @@ def create_party(user):
         resp = jsonify({"status": 409, "error": "A party with a similar name exists"})
         resp.status_code = 409
         return resp
+
+    row = Party.get_party_by_name(name)
+    if row:
+        resp = jsonify({"status": 409, "error": "A party with a similar username exists"})
+        resp.status_code = 409
+        return resp
     # party object
     party = Party(name=name, hqaddress=hqaddress, logo_url=logo_url)
     # create party
     party.create_party()
     # convert party object to dictionary that is readily converted to json
-    jsonify_party = party.to_json()
+    jsonify_party = {
+        "name" : name,
+        "hqaddress" : hqaddress,
+        "logo_url" : logo_url
+    }
     resp = jsonify({"status": 201, "data": jsonify_party, "message": "Party created successfully."})
     resp.status_code = 201
     return resp
@@ -69,7 +78,7 @@ def get_single_party(user, id):
     party = Party.get_party_by_id(id)
     if party:
         # if party is found
-        resp = jsonify({"status": 200, "data": party.to_json(), "message": "Party fetched successfully."})
+        resp = jsonify({"status": 200, "data": party, "message": "Party fetched successfully."})
         resp.status_code = 200
         return resp
         # if party isn't found
