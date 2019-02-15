@@ -115,3 +115,27 @@ def user_login():
     token = token.decode('utf-8')
 
     return jsonify({"message":"Logged in successfully", "status":200, "token":token}), 200
+
+
+@bp.route("/auth/resetpassword", methods=["POST"])
+def reset_password():
+    try:
+        data = request.get_json()
+        email = data["email"]
+    except KeyError:
+        abort(utils.response_fn(400, "error", "Should be email"))
+
+    # use helper function to validate the email
+    helpers.validate_email(email)
+    # if user doesn't exist dont send an email to them
+    try:
+        user = UserModel.get_user_by_mail(email)
+        if not user:
+            abort(utils.response_fn(404, "error",
+                                    "User does not exist. Create an account first"))
+        return utils.response_fn(200, "data", [{
+            "message": "Check your email for password reset link",
+            "email": email
+        }])
+    except psycopg2.DatabaseError as _error:
+        abort(utils.response_fn(500, "error", "Server error"))

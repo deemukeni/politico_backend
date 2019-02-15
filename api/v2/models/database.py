@@ -65,7 +65,17 @@ def create_tables():
     )
     """
 
-    return [parties_table_query,users_table_query,offices_table_query,candidates_table_query]
+    votes_table_query="""
+    CREATE TABLE votes (
+        vote_id SERIAL PRIMARY KEY,
+        createdOn INTEGER  NOT NULL,
+        createBy INTEGER NOT NULL,
+        candidateVoteFor INTEGER NOT NULL,
+        officeVotedFor INTEGER NOT NULL
+    )
+    """
+
+    return [parties_table_query,users_table_query,offices_table_query,candidates_table_query, votes_table_query]
 
 
 def drop_tables():
@@ -90,7 +100,7 @@ def drop_tables():
 
     return [drop_users_query, drop_parties_query, drop_offices_query, drop_candidates_query]
 
-def initiate_database():
+def initiate_database(db_url):
     """
     Initiates database connection and create tables
     """

@@ -2,9 +2,10 @@
 
 import unittest
 import json
+import os
 
 from api.v2 import create_app
-from api.v2.models.models import PARTIES, OFFICES
+from api.v2.models.database import drop_tables
 
 
 class Partiesv2TestCase(unittest.TestCase):
@@ -18,25 +19,35 @@ class Partiesv2TestCase(unittest.TestCase):
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
+        initiate_database(os.getenv("DATABASE_TEST_URL"))
 
         # sample data
         self.user_signup = {
+            "first_name":"uhf",
+            "last_name":"dzvfd",
+            "username":"xvxdfv",
+            "email":"your@them.com",
+            "phone_number":"9996857",
+            "passport_url":"dsfdd",
+            "password":"Aaaaaaaaa",
+            "confirm_password":"Aaaaaaaaa" 
+        }
 
-                                "first_name":"uhf",
-                                "last_name":"dzvfd",
-                                "username":"xvxdfv",
-                                "email":"your@them.com",
-                                "phone_number":"9996857",
-                                "passport_url":"dsfdd",
-                                "password":"Aaaaaaaaa",
-                                "confirm_password":"Aaaaaaaaa"
-                                
-                            }
+        self.user_signup_1 = {
+            "first_name":"uhf",
+            "last_name":"dzvfd",
+            "username":"username",
+            "email":"your@email.com",
+            "phone_number":"0987655443",
+            "passport_url":"dsfdd",
+            "password":"Aaaaaaaaa",
+            "confirm_password":"Aaaaaaaaa" 
+        }
 
         self.user_login = {
-                                "username":"xvxdfv",
-                                "password":"Aaaaaaaaa"
-                            }
+            "username":"username",
+            "password":"Aaaaaaaaa"
+        }
 
         self.token = ''
 
@@ -75,14 +86,21 @@ class Partiesv2TestCase(unittest.TestCase):
             "name": "2 office" ,#invalid key - should be logo_url
             "office_type": "head" 
         }
+    # self.client.post("/api/v2/sign-up", data=self.user_signup_1)
+    # self.login_response = self.client.post("/api/v2/signin", data=self.user_signin_1)
+    # self.login_json_resp = json.loads(self.login_response.data.decode("utf-8"))
+    # self.token = self.login_json_resp["token"]
+    # self.headers = {"token_Bearer": self.token}
 
     def login(self):
         """
         Login a fake user to acquire token"
         """
-        self.client.post("api/v2/users", data = json.dumps(self.user_signup), content_type='application/json')
-        response = self.client.post("api/v2/auth/signin", data=json.dumps(self.user_login), content_type='application/json')
+        # self.client.post("api/v2/users", data = json.dumps(self.user_signup_1), content_type='application/json')
+        self.client.post("/api/v2/sign-up", data=self.user_signup_1, content_type='application/json')
+        response = self.client.post("api/v2/auth/signin", data=self.user_login, content_type='application/json')
         result = json.loads(response.data.decode('utf-8'))
+        print(">>>>> ", response)
         self.token = result['token']
         return self.token
 
@@ -93,7 +111,7 @@ class Partiesv2TestCase(unittest.TestCase):
         self.assertEqual(json.loads(response.data)["message"], "Party created successfully.")
         self.assertEqual(response.status_code, 201)
 
-    # #validation tests
+    #validation tests
     def test_create_party_rejects_empty_fields(self):
         self.token = self.login()
         response = self.client.post("/api/v2/parties", data=json.dumps(self.party_empty_fields), headers={'token_Bearer':self.token}, content_type="application/json")
@@ -222,9 +240,10 @@ class Partiesv2TestCase(unittest.TestCase):
         """
         self.app_context.pop()
         self.client = None
-        PARTIES.clear()
-        OFFICES.clear()
-    
+        # initiate_database(os.getenv("DATABASE_TEST_URL"))
+        drop_tables()
+
+        
 
 if __name__ == '__main__':
     unittest.main()

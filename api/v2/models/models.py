@@ -234,3 +234,88 @@ class User:
             "phone_number": user_row[6],
             "passport_url": user_row[7]
         }
+
+class Candidates:
+    def __init__(self, id, candidate_name, office_id, party_id):
+        self.candidate_name = candidate_name
+        self.office_id = office_id
+        self.party_id = party_id
+
+    def create_candidate():
+
+         query = """
+        INSERT INTO users(candidate_name, office_id, party_id) VALUES(
+            '{}', '{}', '{}', '{}', '{}', '{}', '{}'
+        )""".format(self.candidate_name, self.office_id, self.party_id)
+
+                
+                
+    database.insert_to_db(query)
+
+
+    def does_candidate_exist(candidate_id, office_id):
+
+         query = """
+        SELECT candidate_name, office_id FROM candiddates WHERE candidates.candidate_name AND candidates.office_id VALUES(
+            '{}', '{}'
+        )""".format(self.candidate_name, self.office_id)
+
+    candidate= database.select_from_db(query)
+    return candidate
+
+
+    def add_candidate_to_database():
+         query = """
+        INSERT INTO candidates(candidate_name, office_id) VALUES(
+            '{}', '{}'
+        )""".format(self.candidate_name, self.office_id)
+    
+    database.insert_to_db(query)
+
+    
+
+
+    def to_json(self):
+        """
+        convert from object to dictionary
+        for easy rendering as json response
+        """
+        return {
+            "id": user_row[0],
+            "candidate_name": user_row[1],
+            "office_id": user_row[2],
+            "party_id":  user_row[3],
+        }
+
+class votes:
+    def __init__(self, id, createdOn, createBy, candidateVoteFor, officeVotedFor):
+        self.createdOn = createdOn
+        self.createBy = createBy
+        self.candidateVoteFor = candidateVoteFor
+        self.officeVotedFor = officeVotedFor
+
+    def create_vote():
+
+        query = """
+        INSERT INTO votes(createdOn, createBy, candidateVoteFor, officeVotedFor) VALUES(
+            '{}', '{}', '{}', '{}'
+        )""".format(self.createdOn, self.createBy, self.candidateVoteFor, self.officeVotedFor)
+        
+
+        database.insert_to_db(query)
+
+
+    # def user_vote():
+    #     query="""
+    #     SELECT createdBy, officeVotedFor FROM votes WHERE votes.createdBy='{}'  AND votes.officeVotedFor='{}'""".format(createdBy,officeVotedFor)
+    # def to_json(self):
+    #     """
+    #     convert from object to dictionary
+    #     for easy rendering as json response
+    #     """
+    #     return {
+    #         "id": user_row,
+    #         "createdOn": user_row,
+    #         "createBy": user_row,
+    #         "candidateVoteFor":  user_row,
+    #         "officeVotedFor": user_row
