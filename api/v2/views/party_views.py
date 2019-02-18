@@ -61,6 +61,9 @@ def create_party(user):
 @bp.route("/parties", methods=["GET"])
 @token_required
 def get_parties(user):
+    """
+    Get all avilable offices in the datatbase 
+    """
     parties = Party.get_all_parties()
     if len(parties) == 0:
         # no parties were found
@@ -75,6 +78,9 @@ def get_parties(user):
 @bp.route("/parties/<int:id>", methods=["GET"])
 @token_required
 def get_single_party(user, id):
+    """
+    Get a party by its id
+    """
     party = Party.get_party_by_id(id)
     if party:
         # if party is found
@@ -90,6 +96,9 @@ def get_single_party(user, id):
 @bp.route("/parties/<int:id>", methods=["DELETE"])
 @token_required
 def delete_party(user, id):
+    """
+    Delete the party from database
+    """
     party = Party.get_party_by_id(id)
     if party:
         # after the getting the specific party by its id, delete retrieved party

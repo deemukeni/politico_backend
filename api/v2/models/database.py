@@ -6,6 +6,9 @@ import sys
 
 # connects to the database as indicated in the .env file
 def connect_db():
+    """
+        connects to the database
+    """
     db_url=os.getenv("DATABASE_URL")
     conn= None
     cursor=None
@@ -79,6 +82,9 @@ def create_tables():
 
 
 def drop_tables():
+    """
+        Drops the existing tables everytime the app is run to avoid any errors
+    """
     """
     Delete tables
     """

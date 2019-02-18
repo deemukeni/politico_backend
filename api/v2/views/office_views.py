@@ -15,7 +15,6 @@ PARTIES = []
 def create_office(user):
     """
     Create an office
-
     """
     data = request.get_json()
     try:
@@ -55,6 +54,9 @@ def create_office(user):
 @bp.route("/offices", methods=["GET"])
 @token_required
 def get_all_offices(user):
+    """
+    Get all available offices
+    """
     offices = Office.get_all_offices()
     if len(offices) == 0:
         # no offices were found
@@ -69,6 +71,10 @@ def get_all_offices(user):
 @bp.route("/offices/<int:id>", methods=["GET"])
 @token_required
 def get_single_office(user, id):
+    """
+    Get a specific office by its id
+    """
+
     office = Office.get_office_by_id(id)
     if office:
         # if office is found
@@ -83,6 +89,9 @@ def get_single_office(user, id):
 @bp.route("/offices/<int:id>", methods=(["DELETE"]))
 @token_required
 def delete_office(user, id):
+    """
+    Delete an office from the database
+    """
     office = Office.get_office_by_id(id)
     if office:
         # delete retrieved office

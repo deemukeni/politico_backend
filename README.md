@@ -73,11 +73,25 @@ $ pytest --cov=app
 | **POST** |	`/api/v1/offices`	| create office |
 | **GET** |	`/api/v1/offices`	| Get all offices |
 | **GET** |	`/api/v1/offices/<int:id>`	| Get office by id |
-| **PATCH** |	`/api/v1/offices/<int:id>`	| Edit office |
 | **DELETE** |	`/api/v1/offices/<int:id>`	| Delete a office |
+
+
+## API Endpoints (V2)
+| **HTTP METHOD** |	**URI** |	**ACTION**
+| --- | --- | --- |
+| **POST** | `/api/v2/parties` | create party |
+| **GET** |	`/api/v2/parties` | Get all parties |
+| **GET** |	`/api/v2/parties/<int:id>` | Get party by id |
+| **DELETE** |	`/api/v2/parties/<int:id>`	| Delete a party |
+| **POST** |	`/api/v2/offices`	| create office |
+| **GET** |	`/api/v2/offices`	| Get all offices |
+| **GET** |	`/api/v2/offices/<int:id>`	| Get office by id |
+| **DELETE** |	`/api/v2/offices/<int:id>`	| Delete a office |
+| **POST** |	`/api/v2/votes`	| Vote for a candidate |
+| **POST** |	`/api/v2/auth/signin/`	| User Sign  In |
+| **POST** |	`/api/v2/auth/sign-up`	| User Sign Up |
+
 
 ## Author
 
 Deborah Mukeni - [Dee](https://github.com/deemukeni)
-
-

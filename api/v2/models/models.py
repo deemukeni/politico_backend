@@ -10,6 +10,9 @@ class Party:
         self.logo_url = logo_url
     
     def create_party(self):
+        """
+        Add party created to the table in database
+        """
         query = """
         INSERT INTO parties(party_name, hqAddress, logo_url) VALUES(
             '{}', '{}', '{}')
@@ -19,6 +22,9 @@ class Party:
 
     @classmethod
     def get_party_by_name(cls, name):
+        """
+        ppick a party created from the table in database
+        """
         query = """
         SELECT * FROM parties WHERE party_name='{}'
         """.format(name)
@@ -27,6 +33,9 @@ class Party:
 
     @classmethod
     def get_all_parties(cls):
+        """
+        Get all available parties from  the table in database
+        """
         query="""
         SELECT * FROM parties
         """
@@ -39,6 +48,9 @@ class Party:
 
     @classmethod
     def get_party_by_id(cls, id):
+        """
+        Get a specific  party  from the table in database by its id
+        """
         query=""" SELECT * FROM parties WHERE party_id='{}'
         """.format(id)
         party = database.select_from_database(query)
@@ -49,15 +61,10 @@ class Party:
         return party
 
 
-    # """
-    # add patch endpoint to update a party by id
-    #     dont forget!!!!!
-    # """
-
     @classmethod
     def delete_party(cls, id):
         """
-        update a political party
+        delete a political party from the database
         """
         party = Party.get_party_by_id(id)
 
@@ -94,6 +101,9 @@ class Office:
         self.name =name
     
     def create_office(self):
+        """
+        Add an office created to the table in database
+        """
         query = """
         INSERT INTO offices(office_type, office_name) VALUES(
             '{}', '{}')
@@ -102,6 +112,9 @@ class Office:
 
     @classmethod
     def get_office_by_name(cls, name):
+        """
+        Get a specific  office  from the table in database by its id
+        """
         query = """
         SELECT * FROM offices WHERE office_name='{}'
         """.format(name)
@@ -111,6 +124,9 @@ class Office:
 
     @classmethod
     def get_all_offices(cls):
+        """
+        Get all available offices from  the table in database
+        """
         query="""
         SELECT * FROM offices
         """
@@ -124,6 +140,9 @@ class Office:
 
     @classmethod
     def get_office_by_id(cls, id):
+        """
+        Get a specific  office  from the table in database by its id
+        """
         query=""" SELECT * FROM offices WHERE office_id='{}'
         """.format(id)
         office = database.select_from_database(query)
@@ -136,6 +155,9 @@ class Office:
 
     @classmethod
     def delete_office(cls, id):
+        """
+        Remove a specific  office  from the table in database.
+        """
         office = Office.get_office_by_id(id)
         if office:
             query="""
@@ -177,6 +199,9 @@ class User:
         self.is_admin = False
 
     def create_user(self):
+        """
+        Add a new user to the database
+        """
 
         query = """
         INSERT INTO users(firstname, lastname, username, email, password, phoneNumber, passport_url) VALUES(
@@ -188,6 +213,9 @@ class User:
 
     @classmethod
     def get_user_by_phone_number(cls, phone_number):
+        """
+        Get a user by their phone number
+        """
 
         query = """
         SELECT * FROM users WHERE users.phoneNumber='{}'
@@ -198,22 +226,22 @@ class User:
 
     @classmethod
     def  get_user_by_username(cls, username):
+        """
+        Get a user by their username
+        """
 
         query = """
         SELECT * FROM users WHERE username='{}'
         """.format(username)
 
         user = database.select_from_database(query)
-        # try:
-        #     user = user[0][1]
-
-        #     print(user)
-        # except:
-        #     print("No user posted yet")
         return user
 
     @classmethod
     def  get_user_by_email(cls, email):
+        """
+        Get a user by their email
+        """
 
         query = """
         SELECT email FROM users WHERE users.email='{}'
@@ -254,6 +282,9 @@ class Candidates:
         self.party_id = party_id
 
     def create_candidate():
+        """
+        Add a candidate to the database in the candidates tables
+        """
         query = """
         INSERT INTO users(candidate_name, office_id, party_id) VALUES(
             '{}', '{}', '{}', '{}', '{}', '{}', '{}'
@@ -262,6 +293,9 @@ class Candidates:
 
 
     def does_candidate_exist(candidate_id, office_id):
+        """
+        Check if a candidate exists in the  database in the candidates tables
+        """
         query = """
         SELECT candidate_name, office_id FROM candiddates WHERE candidates.candidate_name AND candidates.office_id VALUES(
             '{}', '{}'

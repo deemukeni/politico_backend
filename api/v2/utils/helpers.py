@@ -33,14 +33,23 @@ def validate_password(password):
         if not re.match("^[a-zA-Z]\w{3,14}$", password):
                 abort(make_response(jsonify({"error" : "invalid  password"})))
 
+        if len(password) +1  > 6:
+                abort(make_response(jsonify({"error" : "Password is too long"})))
+
 def validate_names(data):
         for key,value in data.items():
                 if key in ["first_name", "last_name", "other_name"]:
                         if not value.isalpha():
                                 abort(make_response(jsonify({"error" : "use letters in {}".format(key)})))
 
+def validate_phone_number():
+        if len(phone_number) + 1 > 10:
+                abort(make_response(jsonify({"error" : "Phone number entered is too long"})))
 
 def token_required(f):
+        """
+        Creates a function to generate a token to  be used by the user as an authorization to carry out tasks
+        """
         @wraps(f)
         def decorated(*args, **kwargs):
                 token = None

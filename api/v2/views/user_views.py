@@ -17,6 +17,9 @@ KEY = os.getenv("SECRET_KEY")
 # User endpoints
 @bp.route("/auth/sign-up", methods=(["POST"]))
 def create_user():
+    """
+    Create a new user
+    """
     data = request.get_json()
     try:
         first_name = data["first_name"]
@@ -119,6 +122,9 @@ def user_login():
 
 @bp.route("/auth/resetpassword", methods=["POST"])
 def reset_password():
+    """
+    Allows user to reset their password
+    """
     try:
         data = request.get_json()
         email = data["email"]
