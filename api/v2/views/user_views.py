@@ -108,7 +108,7 @@ def user_login():
         abort(make_response(jsonify({'status': 404,
                                         'error': "Invalid username/password combination."}), 404))
 
-    payload = {"username":username, 'exp':datetime.datetime.utcnow()+ datetime.timedelta(hours=5)}
+    payload = {"username":username}
 
     token = jwt.encode(payload, KEY, algorithm='HS256')
 

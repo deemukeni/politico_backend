@@ -27,7 +27,7 @@ def create_tables():
     Create tables on app start
     """
     parties_table_query="""
-    CREATE TABLE parties (
+    CREATE TABLE IF NOT EXISTS parties (
         party_id SERIAL PRIMARY KEY,
         party_name VARCHAR (24) NOT NULL,
         hqAddress VARCHAR NOT NULL,
@@ -36,7 +36,7 @@ def create_tables():
     """
 
     users_table_query="""
-    CREATE TABLE users (
+    CREATE TABLE IF NOT EXISTS users (
         user_id SERIAL PRIMARY KEY,
         firstname VARCHAR (24) NOT NULL,
         lastname VARCHAR (24) NOT NULL,
@@ -49,7 +49,7 @@ def create_tables():
     """
 
     offices_table_query="""
-    CREATE TABLE offices (
+    CREATE TABLE IF NOT EXISTS offices (
         office_id SERIAL PRIMARY KEY,
         office_type VARCHAR (24) NOT NULL,
         office_name VARCHAR (24) NOT NULL
@@ -57,7 +57,7 @@ def create_tables():
     """
 
     candidates_table_query="""
-    CREATE TABLE candidates (
+    CREATE TABLE IF NOT EXISTS candidates (
         candidate_id SERIAL PRIMARY KEY,
         candidate_name VARCHAR (24) NOT NULL,
         office_id INTEGER NOT NULL,
@@ -66,12 +66,12 @@ def create_tables():
     """
 
     votes_table_query="""
-    CREATE TABLE votes (
+    CREATE TABLE IF NOT EXISTS votes (
         vote_id SERIAL PRIMARY KEY,
-        createdOn INTEGER  NOT NULL,
-        createBy INTEGER NOT NULL,
-        candidateVoteFor INTEGER NOT NULL,
-        officeVotedFor INTEGER NOT NULL
+        createdOn TIMESTAMP NOT NULL,
+        createBy VARCHAR NOT NULL,
+        candidateVoteFor VARCHAR  NOT NULL,
+        officeVotedFor VARCHAR NOT NULL
     )
     """
 
@@ -98,7 +98,11 @@ def drop_tables():
     DROP TABLE IF EXISTS candidates
     """
 
-    return [drop_users_query, drop_parties_query, drop_offices_query, drop_candidates_query]
+    drop_votes_query="""
+    DROP TABLE IF EXISTS votes
+    """
+
+    return [drop_users_query, drop_parties_query, drop_offices_query, drop_candidates_query, drop_votes_query]
 
 def initiate_database(db_url):
     """
@@ -108,8 +112,8 @@ def initiate_database(db_url):
         conn, cursor = connect_db()
         i = 0
         # drop_tables is for clearing all the data from the data base.
-        # queries = drop_tables() + create_tables()
-        queries = create_tables()
+        queries = drop_tables() + create_tables()
+        # queries = create_tables()
 
         while i != len(queries):
             query = queries[i]

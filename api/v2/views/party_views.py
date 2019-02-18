@@ -28,7 +28,7 @@ def create_party(user):
     helpers.check_whitespace(data)
     # does not accept empty fields. if the users request is empty
     if helpers.required_fields(data, ["name", "hqaddress", "logo_url"]):
-        resp = jsonify({"status": 400, "error": "All fields are required."})
+        resp = jsonify({"status": 400, "error": "invalid input at {}" .format(key)})
         resp.status_code = 400
         return resp
     # name party has to be unique
@@ -94,11 +94,10 @@ def delete_party(user, id):
     if party:
         # after the getting the specific party by its id, delete retrieved party
         Party.delete_party(id)
-        resp = jsonify({"status": 200, "message": "Party deleted sucessfully."})
+        resp = jsonify({"status": 200, "message": "Party deleted successfully."})
         resp.status_code = 200
         return resp
     else:
         resp = jsonify({"status": 404, "message": "Delete failed. Party not found."})
         resp.status_code = 404
         return resp
-
