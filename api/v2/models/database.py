@@ -68,10 +68,10 @@ def create_tables():
     votes_table_query="""
     CREATE TABLE IF NOT EXISTS votes (
         vote_id SERIAL PRIMARY KEY,
-        createdOn INTEGER  NOT NULL,
-        createBy INTEGER NOT NULL,
-        candidateVoteFor INTEGER NOT NULL,
-        officeVotedFor INTEGER NOT NULL
+        createdOn TIMESTAMP NOT NULL,
+        createBy VARCHAR NOT NULL,
+        candidateVoteFor VARCHAR  NOT NULL,
+        officeVotedFor VARCHAR NOT NULL
     )
     """
 
@@ -98,7 +98,11 @@ def drop_tables():
     DROP TABLE IF EXISTS candidates
     """
 
-    return [drop_users_query, drop_parties_query, drop_offices_query, drop_candidates_query]
+    drop_votes_query="""
+    DROP TABLE IF EXISTS votes
+    """
+
+    return [drop_users_query, drop_parties_query, drop_offices_query, drop_candidates_query, drop_votes_query]
 
 def initiate_database(db_url):
     """

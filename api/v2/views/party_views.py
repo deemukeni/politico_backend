@@ -101,4 +101,3 @@ def delete_party(user, id):
         resp = jsonify({"status": 404, "message": "Delete failed. Party not found."})
         resp.status_code = 404
         return resp
-

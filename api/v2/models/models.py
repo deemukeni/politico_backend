@@ -1,3 +1,5 @@
+import datetime
+
 from api.v2.models import database
 import psycopg2
 
@@ -128,6 +130,7 @@ class Office:
         try:
             office = Office.to_json(office[0])
         except:
+
             print("No office found")
         return office
 
@@ -290,14 +293,14 @@ class Candidates:
             "party_id":  user_row[3],
         }
 
-class votes:
-    def __init__(self, id, createdOn, createBy, candidateVoteFor, officeVotedFor):
-        self.createdOn = createdOn
+class Votes:
+    def __init__(self, createBy, candidateVoteFor, officeVotedFor):
+        self.createdOn = datetime.datetime.utcnow()
         self.createBy = createBy
         self.candidateVoteFor = candidateVoteFor
         self.officeVotedFor = officeVotedFor
 
-    def create_vote():
+    def create_vote(self):
 
         query = """
         INSERT INTO votes(createdOn, createBy, candidateVoteFor, officeVotedFor) VALUES(
