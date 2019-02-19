@@ -28,6 +28,8 @@ def connect_db():
 def create_tables():
     """
     Create tables on app start
+    Adds tabes to the database for the various parameters 
+    i.e candidates, parties, offices, votes and users
     """
     parties_table_query="""
     CREATE TABLE IF NOT EXISTS parties (
@@ -83,7 +85,9 @@ def create_tables():
 
 def drop_tables():
     """
-        Drops the existing tables everytime the app is run to avoid any errors
+        Drops the existing tables everytime the app is run to avoid any errors, i.e 
+        "the table requested already exists"
+        It returns an empty database every time the programme is run
     """
     """
     Delete tables
@@ -134,6 +138,11 @@ def initiate_database(db_url):
 def select_from_database(query):
     """
         function is for getting data from the database
+        Any time you want to get anything from the database:
+        party = database.select_from_database(query)
+            and the new party will be selected from the Party table within the database
+
+        
     """
     conn, cursor = connect_db()
     cursor.execute(query)
@@ -146,6 +155,11 @@ def select_from_database(query):
 def insert_to_db(query):
     """
         function is for inserting or adding data into the database
+        Any time you want to insert anything into the database:
+        for example you just created a party:
+            party = database.select_from_database(query)
+            and the new party will be inserted into the Party table within the database
+
     """
     try:
         conn, cursor = connect_db()

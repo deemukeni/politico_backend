@@ -42,9 +42,10 @@ def validate_names(data):
                         if not value.isalpha():
                                 abort(make_response(jsonify({"error" : "use letters in {}".format(key)})))
 
-def validate_phone_number():
+def validate_phone_number(phone_number):
         if len(phone_number) + 1 > 10:
-                abort(make_response(jsonify({"error" : "Phone number entered is too long"})))
+                a = abort(make_response(jsonify({"error" : "Phone number entered is too long"})))
+                
 
 def token_required(f):
         """

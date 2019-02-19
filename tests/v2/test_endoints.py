@@ -12,9 +12,6 @@ class Partiesv2TestCase(unittest.TestCase):
     #set up tests
     def setUp(self):
         """
-        Set up 
-        """
-        """
         create testing app
         set up testing variables
         """

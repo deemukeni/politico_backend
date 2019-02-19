@@ -18,8 +18,17 @@ KEY = os.getenv("SECRET_KEY")
 @bp.route("/auth/sign-up", methods=(["POST"]))
 def create_user():
     """
-    Create a new user
-    """
+        A method to create a user.
+        :param first_name: A string, the first_name name.
+        :param last_name: A string, the last_name name.
+        :param username: A string, the username name.
+        :param phone_number: An integer, the user's phone number.
+        :param email: A Varchar, the user's email.
+        :param passport_url: A varchar, the users passport.
+        :param password: A varchar, the user's password.
+        :param confirm-password: A varchar, the user has confirm the password they  gave before
+        :return: user created successfully.
+        """
     data = request.get_json()
     try:
         first_name = data["first_name"]
@@ -46,6 +55,7 @@ def create_user():
     helpers.check_whitespace(data)
     helpers.validate_names(data)
     helpers.validate_email(email)
+    helpers.validate_phone_number(phone_number)
 
     row = User.get_user_by_username(username)
     if row:
@@ -89,9 +99,12 @@ def create_user():
 
 @bp.route("/auth/signin", methods=['POST'])
 def user_login():
-    """
-    User can login
-    """
+   """
+        A method to create a user.
+        :param username: A string, the username.
+        :param password: A string, the last_name name.
+        :return: login successfull.
+        """
     try:
         data=request.get_json()
         username = data["username"]

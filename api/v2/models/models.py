@@ -11,7 +11,11 @@ class Party:
     
     def create_party(self):
         """
-        Add party created to the table in database
+        A method to create a party.
+        :param name: A string, the party's name.
+        :param hqaddress: A varchar, the party's address.
+        :param logo_url: A varchar, the party's link to it's logo.
+        :return: Party created successfully.
         """
         query = """
         INSERT INTO parties(party_name, hqAddress, logo_url) VALUES(
@@ -23,7 +27,9 @@ class Party:
     @classmethod
     def get_party_by_name(cls, name):
         """
-        ppick a party created from the table in database
+        pick a party created from the table in database by its name since its a 
+        unique identifier of the party
+        parameter: name
         """
         query = """
         SELECT * FROM parties WHERE party_name='{}'
@@ -50,6 +56,7 @@ class Party:
     def get_party_by_id(cls, id):
         """
         Get a specific  party  from the table in database by its id
+        "/parties/<int:id>"
         """
         query=""" SELECT * FROM parties WHERE party_id='{}'
         """.format(id)
@@ -102,7 +109,11 @@ class Office:
     
     def create_office(self):
         """
-        Add an office created to the table in database
+        A method to create an office.
+        :param name: A string, the office name.
+        :param hqaddress: A varchar, the office address.
+        :param logo_url: A varchar, the office link to it's logo.
+        :return: Office created successfully.
         """
         query = """
         INSERT INTO offices(office_type, office_name) VALUES(
@@ -114,6 +125,7 @@ class Office:
     def get_office_by_name(cls, name):
         """
         Get a specific  office  from the table in database by its id
+        "/office/name"
         """
         query = """
         SELECT * FROM offices WHERE office_name='{}'
@@ -142,6 +154,7 @@ class Office:
     def get_office_by_id(cls, id):
         """
         Get a specific  office  from the table in database by its id
+        "/parties/<int:id>"
         """
         query=""" SELECT * FROM offices WHERE office_id='{}'
         """.format(id)
@@ -201,6 +214,7 @@ class User:
     def create_user(self):
         """
         Add a new user to the database
+        only i there is no  user with similar info
         """
 
         query = """
@@ -241,6 +255,7 @@ class User:
     def  get_user_by_email(cls, email):
         """
         Get a user by their email
+        Returns the user and all their info if email is found
         """
 
         query = """
@@ -284,10 +299,11 @@ class Candidates:
     def create_candidate():
         """
         Add a candidate to the database in the candidates tables
+        only if it does not exist
         """
         query = """
         INSERT INTO users(candidate_name, office_id, party_id) VALUES(
-            '{}', '{}', '{}', '{}', '{}', '{}', '{}'
+            '{}', '{}', '{}'
         )""".format(self.candidate_name, self.office_id, self.party_id)
         database.insert_to_db(query)
 
@@ -295,6 +311,8 @@ class Candidates:
     def does_candidate_exist(candidate_id, office_id):
         """
         Check if a candidate exists in the  database in the candidates tables
+        Goes through the entire candidates table and returns a candidate if they find a match and returns
+        "candidate not found" if the candidate does not exist
         """
         query = """
         SELECT candidate_name, office_id FROM candiddates WHERE candidates.candidate_name AND candidates.office_id VALUES(
@@ -306,6 +324,10 @@ class Candidates:
 
 
     def add_candidate_to_database():
+        """
+        Adds a new candidate to the database by appending their infointo 
+        the candidates table
+        """
         query = """
         INSERT INTO candidates(candidate_name, office_id) VALUES(
             '{}', '{}'

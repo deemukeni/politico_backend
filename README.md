@@ -91,6 +91,42 @@ $ pytest --cov=app
 | **POST** |	`/api/v2/auth/signin/`	| User Sign  In |
 | **POST** |	`/api/v2/auth/sign-up`	| User Sign Up |
 
+- ```/api/v2/auth/sign-up``` Sign up to create account
+
+                {
+                "first_name":"uhf",
+                "last_name":"dzvfd",
+                "username":"xvxdfv",
+                "email":"your@them.com",
+                "phone_number":"9996857",
+                "passport_url":"dsfdd",
+                "password":"Aaaaaaaaa",
+                "confirm_password":"Aaaaaaaaa" 
+            }
+        
+- ````/api/v2/auth/signin/```` Sign in as a user to get to token for authentication
+ 
+                {
+                    "username":"username",
+                    "password":"Aaaaaaaaa"
+                }
+        
+- ````/api/v2/parties```` Create party
+
+                {
+                    "name": "Party 1",
+                    "hqaddress": "address 1",
+                    "logo_url": "http://logo.url"
+                }
+        
+- ````/api/v1/offices```` Create office
+
+        {
+            "office_name": "office 1",
+            "office_type": "head"
+        }
+        
+
 
 ## Author
 

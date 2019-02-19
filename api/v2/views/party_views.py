@@ -13,8 +13,10 @@ PARTIES = []
 @token_required
 def create_party(user):
     """
-    create a political party
-    """
+        A method to create a user.
+        :param party_name: A string, the party name.
+        :param party_logo: A string, the party logo.
+        """
     data = request.get_json()
     try:
         name = data["name"]

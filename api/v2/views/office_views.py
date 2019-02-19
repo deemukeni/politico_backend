@@ -13,9 +13,11 @@ PARTIES = []
 @bp.route("/offices", methods=["POST"])
 @token_required
 def create_office(user):
-    """
-    Create an office
-    """
+    """"
+        A method to create a user.
+        :param office_name: A string, the office name.
+        :param office_type: A string, the type of office.
+        """
     data = request.get_json()
     try:
         office_type = data["office_type"]
