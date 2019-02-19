@@ -152,7 +152,6 @@ class Partiesv2TestCase(unittest.TestCase):
         response = self.client.post("/api/v2/parties", data=json.dumps(self.party), headers={'token_Bearer':self.token}, content_type='application/json')
         self.assertEqual(json.loads(response.data)["message"], "Party created successfully.")
         self.assertEqual(response.status_code, 201)
-        # 
         response = self.client.get("/api/v2/parties/1", headers={'token_Bearer':self.token}, content_type="application/json")
         self.assertEqual(json.loads(response.data)["message"], "Party fetched successfully.")
         self.assertEqual(response.status_code, 200)

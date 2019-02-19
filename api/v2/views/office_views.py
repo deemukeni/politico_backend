@@ -5,19 +5,15 @@ from api.v2.models.models import Office
 from api.v2.utils import helpers
 from api.v2.views import bp
 from api.v2.utils.helpers import token_required
-# a list of all the parties where, after they are created, they are stored.
-PARTIES = []
-
 
 
 @bp.route("/offices", methods=["POST"])
 @token_required
 def create_office(user):
     """"
-        A method to create a user.
-        :param office_name: A string, the office name.
-        :param office_type: A string, the type of office.
-        """
+    A method to create a user.
+    :param user: token
+    """
     data = request.get_json()
     try:
         office_type = data["office_type"]

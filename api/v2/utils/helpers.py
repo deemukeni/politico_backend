@@ -11,8 +11,8 @@ KEY = os.getenv('SECRET_KEY')
 
 def required_fields(data, fields):
     """
-    data is the payload from the user
-    fields is a list of required fields
+    Checks if payload includes all the required data
+    :return: None, if there are no empty fields
     """
     for field in fields:
         if data[field] == "":
@@ -21,15 +21,27 @@ def required_fields(data, fields):
 
 
 def check_whitespace(data):
+        """
+        Checks for any whitespacein the input data
+        :param data: actual data
+        """
         for key,values in data.items():
                 if not values.strip():
                         abort(make_response(jsonify({"error" : "invalid input at {}" .format(key)}), 400))
 
 def validate_email(email):
+        """
+        checks if email format is correct
+        :param email: user's emaill
+        """
         if not re.match("^([a-zA-Z0-9_\-]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$", email):
                 abort(make_response(jsonify({"error" : "invalid email address"})))
 
 def validate_password(password):
+        """
+        checks if password is strong
+        :param password: user's password
+        """
         if not re.match("^[a-zA-Z]\w{3,14}$", password):
                 abort(make_response(jsonify({"error" : "invalid  password"})))
 
@@ -37,12 +49,20 @@ def validate_password(password):
                 abort(make_response(jsonify({"error" : "Password is too long"})))
 
 def validate_names(data):
+        """
+        checks if name format is correct
+        :param name: user's namel
+        """
         for key,value in data.items():
                 if key in ["first_name", "last_name", "other_name"]:
                         if not value.isalpha():
                                 abort(make_response(jsonify({"error" : "use letters in {}".format(key)})))
 
 def validate_phone_number(phone_number):
+        """
+        Checks if the phone number is of the required length
+        :param phone_number: user's phone number
+        """
         if len(phone_number) + 1 > 10:
                 a = abort(make_response(jsonify({"error" : "Phone number entered is too long"})))
                 

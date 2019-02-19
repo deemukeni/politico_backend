@@ -7,7 +7,8 @@ import sys
 # connects to the database as indicated in the .env file
 def connect_db():
     """
-        connects to the database
+    A function make connection to database
+    :return: conn, cursor
     """
     db_url=os.getenv("DATABASE_URL")
     conn= None
@@ -27,9 +28,7 @@ def connect_db():
 
 def create_tables():
     """
-    Create tables on app start
-    Adds tabes to the database for the various parameters 
-    i.e candidates, parties, offices, votes and users
+    A function to create tables on the database
     """
     parties_table_query="""
     CREATE TABLE IF NOT EXISTS parties (
@@ -85,9 +84,9 @@ def create_tables():
 
 def drop_tables():
     """
-        Drops the existing tables everytime the app is run to avoid any errors, i.e 
-        "the table requested already exists"
-        It returns an empty database every time the programme is run
+    Drops the existing tables everytime the app is run to avoid any errors, i.e 
+    "the table requested already exists"
+    It returns an empty database every time the programme is run
     """
     drop_users_query="""
     DROP TABLE IF EXISTS users
@@ -113,7 +112,10 @@ def drop_tables():
 
 def initiate_database(db_url):
     """
-    Initiates database connection and create tables
+    A function to initiate the database
+    :param db_url: os.getenv("DATABASE_URL")(receives environment configurations from the .env file)
+    :it first checks to see if the database is empty, if so it drops the tables leaving the databas empty
+    :It will only add data into the database while its  still empty.
     """
     try:
         conn, cursor = connect_db()
@@ -134,12 +136,9 @@ def initiate_database(db_url):
 
 def select_from_database(query):
     """
-        function is for getting data from the database
-        Any time you want to get anything from the database:
-        party = database.select_from_database(query)
-            and the new party will be selected from the Party table within the database
-
-        
+    A function is for getting data from the database
+    :param query: an sql query
+    :return: rows from the querried table   
     """
     conn, cursor = connect_db()
     cursor.execute(query)
@@ -151,12 +150,8 @@ def select_from_database(query):
 
 def insert_to_db(query):
     """
-        function is for inserting or adding data into the database
-        Any time you want to insert anything into the database:
-        for example you just created a party:
-            party = database.select_from_database(query)
-            and the new party will be inserted into the Party table within the database
-
+    A function for inserting data into the database
+    :param query: an sql query
     """
     try:
         conn, cursor = connect_db()

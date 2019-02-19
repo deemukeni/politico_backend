@@ -13,10 +13,11 @@ PARTIES = []
 @token_required
 def create_party(user):
     """
-        A method to create a user.
-        :param party_name: A string, the party name.
-        :param party_logo: A string, the party logo.
-        """
+    A method to create a user.
+    :param party_name: A string, the party name.
+    :param party_logo: A string, the party logo.
+    :return resp: json response
+    """
     data = request.get_json()
     try:
         name = data["name"]
@@ -64,7 +65,8 @@ def create_party(user):
 @token_required
 def get_parties(user):
     """
-    Get all avilable offices in the datatbase 
+    Get all avilable offices in the datatbase
+    :param user: token
     """
     parties = Party.get_all_parties()
     if len(parties) == 0:
@@ -82,6 +84,8 @@ def get_parties(user):
 def get_single_party(user, id):
     """
     Get a party by its id
+    :param user: token
+    :param id: party id
     """
     party = Party.get_party_by_id(id)
     if party:
@@ -100,6 +104,8 @@ def get_single_party(user, id):
 def delete_party(user, id):
     """
     Delete the party from database
+    :param id: party id
+    :param user: token
     """
     party = Party.get_party_by_id(id)
     if party:

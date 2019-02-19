@@ -15,7 +15,6 @@ class Party:
         :param name: A string, the party's name.
         :param hqaddress: A varchar, the party's address.
         :param logo_url: A varchar, the party's link to it's logo.
-        :return: Party created successfully.
         """
         query = """
         INSERT INTO parties(party_name, hqAddress, logo_url) VALUES(
@@ -29,7 +28,8 @@ class Party:
         """
         pick a party created from the table in database by its name since its a 
         unique identifier of the party
-        parameter: name
+        parameter: name: party name.
+        return: the party whose name has been requested
         """
         query = """
         SELECT * FROM parties WHERE party_name='{}'
@@ -41,6 +41,7 @@ class Party:
     def get_all_parties(cls):
         """
         Get all available parties from  the table in database
+        returns: a list of the available parties
         """
         query="""
         SELECT * FROM parties
@@ -55,9 +56,11 @@ class Party:
     @classmethod
     def get_party_by_id(cls, id):
         """
-        Get a specific  party  from the table in database by its id
-        "/parties/<int:id>"
+        A method to get a specific party by id
+        :param id: the party id
+        :return: the party matching the id if found otherwise none
         """
+
         query=""" SELECT * FROM parties WHERE party_id='{}'
         """.format(id)
         party = database.select_from_database(query)
@@ -71,8 +74,10 @@ class Party:
     @classmethod
     def delete_party(cls, id):
         """
-        delete a political party from the database
+        A method to delete a party.
+        param id: id of the party that is to be deleted
         """
+
         party = Party.get_party_by_id(id)
 
         if party:
@@ -92,8 +97,9 @@ class Party:
     @classmethod
     def to_json(self, party_row):
         """
-        convert from object to dictionary
-        for easy rendering as json response
+        convert from object to dictionary for easy rendering as json responseget_party_by_id
+        :return:parameters in json format
+        
         """
         return {
             "name": party_row[1],
@@ -124,8 +130,8 @@ class Office:
     @classmethod
     def get_office_by_name(cls, name):
         """
-        Get a specific  office  from the table in database by its id
-        "/office/name"
+        Get a specific  office  from the table in database by its id "/office/name"
+        :return: specific office querried
         """
         query = """
         SELECT * FROM offices WHERE office_name='{}'
@@ -138,6 +144,7 @@ class Office:
     def get_all_offices(cls):
         """
         Get all available offices from  the table in database
+        :return: all offices available in the database
         """
         query="""
         SELECT * FROM offices
@@ -153,8 +160,9 @@ class Office:
     @classmethod
     def get_office_by_id(cls, id):
         """
-        Get a specific  office  from the table in database by its id
-        "/parties/<int:id>"
+        Get a specific  office  from the table in database by its id"/parties/<int:id>"
+        :param id: office id    
+        :return: requested office
         """
         query=""" SELECT * FROM offices WHERE office_id='{}'
         """.format(id)
@@ -170,6 +178,7 @@ class Office:
     def delete_office(cls, id):
         """
         Remove a specific  office  from the table in database.
+        :param id: the office id
         """
         office = Office.get_office_by_id(id)
         if office:
@@ -189,8 +198,8 @@ class Office:
     @classmethod
     def to_json(self, office_row):
         """
-        convert from object to dictionary
-        for easy rendering as json response
+        convert from object to dictionary for easy rendering as json response
+        :return: the  available data in json format
         """
         return {
             "office_id": office_row[0],
@@ -214,7 +223,7 @@ class User:
     def create_user(self):
         """
         Add a new user to the database
-        only i there is no  user with similar info
+        Queries the database to add data into the users table
         """
 
         query = """
@@ -228,7 +237,8 @@ class User:
     @classmethod
     def get_user_by_phone_number(cls, phone_number):
         """
-        Get a user by their phone number
+        Query database to get a user by their phone number
+        :return: user with the phone number used
         """
 
         query = """
@@ -242,6 +252,8 @@ class User:
     def  get_user_by_username(cls, username):
         """
         Get a user by their username
+        :params: user's username
+        :return: user with requested username
         """
 
         query = """
@@ -255,7 +267,8 @@ class User:
     def  get_user_by_email(cls, email):
         """
         Get a user by their email
-        Returns the user and all their info if email is found
+        :param email: user's email
+        :return: user whose email was querried
         """
 
         query = """
@@ -267,6 +280,11 @@ class User:
 
     @staticmethod
     def get_user_by_password(password):
+        """
+        Used to verify the correct username-passwword combination
+        :param password: user's password
+        :return: password
+        """
 
         query = """
         SELECT password FROM users WHERE users.password='{}'
@@ -277,8 +295,8 @@ class User:
     
     def to_json(self, user_row):
         """
-        convert from object to dictionary
-        for easy rendering as json response
+        convert from object to dictionary for easy rendering as json response
+        :return: the  available data in json format
         """
         return {
             "id": user_row[0],
@@ -298,8 +316,7 @@ class Candidates:
 
     def create_candidate():
         """
-        Add a candidate to the database in the candidates tables
-        only if it does not exist
+        Creates a candidate
         """
         query = """
         INSERT INTO users(candidate_name, office_id, party_id) VALUES(
@@ -310,9 +327,10 @@ class Candidates:
 
     def does_candidate_exist(candidate_id, office_id):
         """
-        Check if a candidate exists in the  database in the candidates tables
-        Goes through the entire candidates table and returns a candidate if they find a match and returns
-        "candidate not found" if the candidate does not exist
+        Checks if candidate exists in database
+        :params candidate_id: id of the candidate
+        :params office_id: id of office that the candidate is running for
+        :return: candidate
         """
         query = """
         SELECT candidate_name, office_id FROM candiddates WHERE candidates.candidate_name AND candidates.office_id VALUES(
@@ -325,8 +343,7 @@ class Candidates:
 
     def add_candidate_to_database():
         """
-        Adds a new candidate to the database by appending their infointo 
-        the candidates table
+        Adds a new candidate to the database
         """
         query = """
         INSERT INTO candidates(candidate_name, office_id) VALUES(
@@ -339,8 +356,8 @@ class Candidates:
 
     def to_json(self):
         """
-        convert from object to dictionary
-        for easy rendering as json response
+        convert from object to dictionary for easy rendering as json response
+        :return: the  available data in json format
         """
         return {
             "id": user_row[0],
@@ -357,7 +374,13 @@ class Votes:
         self.officeVotedFor = officeVotedFor
 
     def create_vote(self):
-
+        """
+        Creates a vote
+        :param officeVotedFor: office that the candidate is running for
+        :param createBy: voter
+        :param candidateVoteFor: candidate voted for
+        :param createdOn: date of vote
+        """
         query = """
         INSERT INTO votes(createdOn, createBy, candidateVoteFor, officeVotedFor) VALUES(
             '{}', '{}', '{}', '{}'
@@ -372,8 +395,8 @@ class Votes:
         SELECT createdBy, officeVotedFor FROM votes WHERE votes.createdBy='{}'  AND votes.officeVotedFor='{}'""".format(createdBy,officeVotedFor)
     def to_json(self):
         """
-        convert from object to dictionary
-        for easy rendering as json response
+        convert from object to dictionary for easy rendering as json response
+        :return: the  available data in json format
         """
         return {
             "id": user_row[0],
