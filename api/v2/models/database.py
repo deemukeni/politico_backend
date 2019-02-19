@@ -89,9 +89,6 @@ def drop_tables():
         "the table requested already exists"
         It returns an empty database every time the programme is run
     """
-    """
-    Delete tables
-    """
     drop_users_query="""
     DROP TABLE IF EXISTS users
     """

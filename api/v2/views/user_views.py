@@ -99,12 +99,12 @@ def create_user():
 
 @bp.route("/auth/signin", methods=['POST'])
 def user_login():
-   """
-        A method to create a user.
-        :param username: A string, the username.
-        :param password: A string, the last_name name.
-        :return: login successfull.
-        """
+    """
+    A method to create a user.
+    :param username: A string, the username.
+    :param password: A string, the last_name name.
+    :return: login successfull.
+    """
     try:
         data=request.get_json()
         username = data["username"]
@@ -117,12 +117,12 @@ def user_login():
     user = User.get_user_by_username(username)
     if not user:
         return jsonify({"status": 404,
-                        "error":"Invalid username/password combination."}), 404
+        "error":"Invalid username/password combination."}), 404
 
     password = User.get_user_by_password(password)
     if not password:
         abort(make_response(jsonify({'status': 404,
-                                        'error': "Invalid username/password combination."}), 404))
+        'error': "Invalid username/password combination."}), 404))
 
     payload = {"username":username}
 

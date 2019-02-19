@@ -38,7 +38,7 @@ class Partiesv2TestCase(unittest.TestCase):
             "last_name":"dzvfd",
             "username":"username",
             "email":"your@email.com",
-            "phone_number":"0987655443",
+            "phone_number":"0955443",
             "passport_url":"dsfdd",
             "password":"Aaaaaaaaa",
             "confirm_password":"Aaaaaaaaa" 
@@ -96,20 +96,22 @@ class Partiesv2TestCase(unittest.TestCase):
         """
         Login a fake user to acquire token"
         """
-        self.client.post("api/v2/auth/sign-up", data = json.dumps(self.user_signup_1), content_type='application/json')
+        sign_up_response = self.client.post("api/v2/auth/sign-up", data = json.dumps(self.user_signup_1), content_type='application/json')
         response = self.client.post("api/v2/auth/signin", data=json.dumps(self.user_login), content_type='application/json')
         result = json.loads(response.data.decode('utf-8'))
+        print (result)
+        result_2 = json.loads(sign_up_response.data.decode('utf-8'))
+
+        print (result_2)
         self.token = result['token']
         return self.token
 
     def test_create_party_successfully(self):
         # data payload - data sent by the user
         self.token = self.login()
-        # token = self.login()
         response = self.client.post("/api/v2/parties", data=json.dumps(self.party), headers={'token_Bearer':self.token}, content_type='application/json')
-        print (response)
-        # self.assertEqual(json.loads(response.data), "Party created successfully.")
-        print(json.loads(response.data))
+        data = json.loads(response.data)
+        self.assertEqual(data['message'], "Party created successfully.")
         self.assertEqual(response.status_code, 201)
 
     #validation tests
