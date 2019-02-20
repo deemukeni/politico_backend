@@ -99,10 +99,8 @@ class Partiesv2TestCase(unittest.TestCase):
         sign_up_response = self.client.post("api/v2/auth/sign-up", data = json.dumps(self.user_signup_1), content_type='application/json')
         response = self.client.post("api/v2/auth/signin", data=json.dumps(self.user_login), content_type='application/json')
         result = json.loads(response.data.decode('utf-8'))
-        print (result)
         result_2 = json.loads(sign_up_response.data.decode('utf-8'))
 
-        print (result_2)
         self.token = result['token']
         return self.token
 
