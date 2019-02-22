@@ -73,11 +73,61 @@ $ pytest --cov=app
 | **POST** |	`/api/v1/offices`	| create office |
 | **GET** |	`/api/v1/offices`	| Get all offices |
 | **GET** |	`/api/v1/offices/<int:id>`	| Get office by id |
-| **PATCH** |	`/api/v1/offices/<int:id>`	| Edit office |
 | **DELETE** |	`/api/v1/offices/<int:id>`	| Delete a office |
+
+
+## API Endpoints (V2)
+| **HTTP METHOD** |	**URI** |	**ACTION**
+| --- | --- | --- |
+| **POST** | `/api/v2/parties` | create party |
+| **GET** |	`/api/v2/parties` | Get all parties |
+| **GET** |	`/api/v2/parties/<int:id>` | Get party by id |
+| **DELETE** |	`/api/v2/parties/<int:id>`	| Delete a party |
+| **POST** |	`/api/v2/offices`	| create office |
+| **GET** |	`/api/v2/offices`	| Get all offices |
+| **GET** |	`/api/v2/offices/<int:id>`	| Get office by id |
+| **DELETE** |	`/api/v2/offices/<int:id>`	| Delete a office |
+| **POST** |	`/api/v2/votes`	| Vote for a candidate |
+| **POST** |	`/api/v2/auth/signin/`	| User Sign  In |
+| **POST** |	`/api/v2/auth/sign-up`	| User Sign Up |
+
+- ```/api/v2/auth/sign-up``` Sign up to create account
+
+                {
+                "first_name":"uhf",
+                "last_name":"dzvfd",
+                "username":"xvxdfv",
+                "email":"your@them.com",
+                "phone_number":"9996857",
+                "passport_url":"dsfdd",
+                "password":"Aaaaaaaaa",
+                "confirm_password":"Aaaaaaaaa" 
+            }
+        
+- ````/api/v2/auth/signin/```` Sign in as a user to get to token for authentication
+ 
+                {
+                    "username":"username",
+                    "password":"Aaaaaaaaa"
+                }
+        
+- ````/api/v2/parties```` Create party
+
+                {
+                    "name": "Party 1",
+                    "hqaddress": "address 1",
+                    "logo_url": "http://logo.url"
+                }
+        
+- ````/api/v1/offices```` Create office
+
+        {
+            "office_name": "office 1",
+            "office_type": "head"
+        }
+        
+
 
 ## Author
 
 Deborah Mukeni - [Dee](https://github.com/deemukeni)
-
-

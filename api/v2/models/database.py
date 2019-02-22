@@ -2,19 +2,19 @@
 import os
 
 import psycopg2
+import psycopg2.extras
 import sys
 
 # connects to the database as indicated in the .env file
-def connect_db():
-    db_url=os.getenv("DATABASE_URL")
-    conn= None
-    cursor=None
-
+def connect_db(db_url):
+    """
+    A function make connection to database
+    :return: conn, cursor
+    """
     try:
 
         conn = psycopg2.connect(db_url)
         print ("\n Database connected\n")
-
         cursor = conn.cursor()
     except(Exception,psycopg2.DatabaseError,psycopg2.ProgrammingError) as error:
         print (error)
@@ -24,7 +24,7 @@ def connect_db():
 
 def create_tables():
     """
-    Create tables on app start
+    A function to create tables on the database
     """
     parties_table_query="""
     CREATE TABLE IF NOT EXISTS parties (
@@ -44,7 +44,8 @@ def create_tables():
         email VARCHAR (24) NOT NULL,
         password VARCHAR (24) NOT NULL,
         phoneNumber INTEGER NOT NULL,
-        passport_url VARCHAR NOT NULL
+        passport_url VARCHAR NOT NULL,
+        role VARCHAR NOT NULL
     )
     """
 
@@ -53,7 +54,7 @@ def create_tables():
         office_id SERIAL PRIMARY KEY,
         office_type VARCHAR (24) NOT NULL,
         office_name VARCHAR (24) NOT NULL
-    )
+    )   
     """
 
     candidates_table_query="""
@@ -74,13 +75,21 @@ def create_tables():
         officeVotedFor VARCHAR NOT NULL
     )
     """
+    # results_table_query="""
+    # CREATE TABLE IF NOT EXISTS results (
+    #     vote_id
+    # )
+    # """
 
-    return [parties_table_query,users_table_query,offices_table_query,candidates_table_query, votes_table_query]
+    # return [parties_table_query,users_table_query,offices_table_query,candidates_table_query, votes_table_query]
+    return [candidates_table_query, votes_table_query]
 
 
 def drop_tables():
     """
-    Delete tables
+    Drops the existing tables everytime the app is run to avoid any errors, i.e 
+    "the table requested already exists"
+    It returns an empty database every time the programme is run
     """
     drop_users_query="""
     DROP TABLE IF EXISTS users
@@ -102,49 +111,71 @@ def drop_tables():
     DROP TABLE IF EXISTS votes
     """
 
-    return [drop_users_query, drop_parties_query, drop_offices_query, drop_candidates_query, drop_votes_query]
+    drop_roles_query="""
+    DROP TABLE IF EXISTS roles
+    """
+
+    # conn, cursor = connect_db(db_url)
+
+    return [drop_users_query, drop_parties_query, drop_offices_query, drop_candidates_query, drop_votes_query, drop_roles_query]
+    # for query in drop_queries:
+    #     cursor.execute(query)
+    #     conn.commit()
+
+    # conn.close()
 
 def initiate_database(db_url):
     """
-    Initiates database connection and create tables
+    A function to initiate the database
+    :param db_url: os.getenv("DATABASE_URL")(receives environment configurations from the .env file)
+    :it first checks to see if the database is empty, if so it drops the tables leaving the databas empty
+    :It will only add data into the database while its  still empty.
     """
+    queries = create_tables()
+    # queries = drop_tables() + create_tables()
     try:
-        conn, cursor = connect_db()
+        conn, cursor = connect_db(db_url)
         i = 0
         # drop_tables is for clearing all the data from the data base.
-        queries = drop_tables() + create_tables()
-        # queries = create_tables()
-
+        queries = create_tables()
         while i != len(queries):
+            print("CONN ",  i)
             query = queries[i]
             cursor.execute(query)
             conn.commit()
             i+=1
 
-        conn.close()
+        # conn.close()
     except Exception as error:
         print("\n Something went wrong: {}".format(error))
 
-def select_from_database(query):
-    """
-        function is for getting data from the database
-    """
-    conn, cursor = connect_db()
-    cursor.execute(query)
-    rows = cursor.fetchall()
+class QueryDatabase:
+    def __init__(self, db_url):
+        global conn,cursor
+        conn, cursor = connect_db(db_url)
 
-    conn.commit()
-    conn.close()
-    return rows
-
-def insert_to_db(query):
-    """
-        function is for inserting or adding data into the database
-    """
-    try:
-        conn, cursor = connect_db()
+    def select_from_database(query):
+        """
+        A function is for getting data from the database
+        :param query: an sql query
+        :return: rows from the querried table   
+        """
         cursor.execute(query)
-        conn.commit() # save
-        conn.close()
-    except psycopg2.Error as error:
-        print (error)
+        rows = cursor.fetchall()
+
+        conn.commit()
+        return rows
+
+    def insert_to_db(query):
+        """
+        A function for inserting data into the database
+        :param query: an sql query
+        """
+        try:
+            cursor.execute(query)
+            conn.commit() # save
+            # conn.close()
+        except psycopg2.Error as error:
+            cursor.execute("ROLLBACK")
+            conn.commit()
+            print (error)
