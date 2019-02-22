@@ -1,5 +1,5 @@
 # write endpoints py
-from flask import Flask, Blueprint, jsonify, request
+from flask import Flask, Blueprint, jsonify, request, abort, make_response
 
 from api.v2.models.models import Office
 from api.v2.utils import helpers
@@ -11,30 +11,26 @@ from api.v2.utils.helpers import token_required
 @token_required
 def create_office(user):
     """"
-    A method to create a user.
+    A method to create an office.
     :param user: token
     """
     data = request.get_json()
     try:
-        office_type = data["office_type"]
-        office_name = data["office_name"]
+        office_type = data["office_type"].strip()
+        office_name = data["office_name"].strip()
     except KeyError:
         # enforce use of appropriate keys
         resp = jsonify({"status": 400, "error": "Use appropriate keys."})
         resp.status_code = 400
         return resp
     # does not accept empty fields
-    if helpers.required_fields(data, ["office_type", "office_name"]):
-        resp = jsonify({"status": 400, "error": "All fields are required."})
-        resp.status_code = 400
-        return resp
-    helpers.check_whitespace(data)
+    helpers.required_fields(data, ["office_type", "office_name"])
     helpers.validate_names(data)
     # office name has to be unique
     row = Office.get_office_by_name(office_name)
     if row:        # a party with a similar name exists
-        resp = jsonify({"status": 409, "error": "An office with a similar name exists"})
-        resp.status_code = 409
+        resp = jsonify({"status": 400, "error": "An office with a similar name exists"})
+        resp.status_code = 400
         return resp
     # office object
     office = Office(name=office_name, office_type=office_type)
@@ -99,5 +95,38 @@ def delete_office(user, id):
         return resp
     else:
         resp = jsonify({"status": 404, "message": "Delete failed. Office not found."})
+        resp.status_code = 404
+        return resp
+
+
+@bp.route("/offices/<int:id>", methods=["PATCH"])
+@token_required
+def update_office(user, id):
+    """
+    
+    """
+    data = request.get_json()
+    try:
+        office_name = data['office_name']
+        office_type = data['office_type']
+    except:
+        # enforce use of appropriate keys
+        resp = jsonify({"status": 400, "error": "Use appropriate keys."})
+        resp.status_code = 400
+        return resp
+    if not office_type or not office_name:
+        abort(make_response(jsonify({"error" : "Cannot update with empty fields", "status" : 400}), 400))
+    office = Office.get_office_by_id(id)
+    if helpers.validate_office(office_type) == False:
+        abort(make_response(jsonify({"error" : "Acceptable office types are federal, legislative, state, local_governament.", "status" : 404}), 404))
+
+    if office:
+        Office.update_office(office_name=office_name, office_type=office_type, office_id=id)
+        # after the getting the specific office by its id, delete retrieved office
+        resp = jsonify({"status": 200, "message": "office updated successfully."})
+        resp.status_code = 200
+        return resp
+    else:
+        resp = jsonify({"status": 404, "message": "Office not found."})
         resp.status_code = 404
         return resp

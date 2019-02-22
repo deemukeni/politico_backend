@@ -1,6 +1,6 @@
 import datetime
 
-from api.v2.models import database
+from api.v2.models.database import QueryDatabase
 import psycopg2
 
 class Party:
@@ -21,7 +21,7 @@ class Party:
             '{}', '{}', '{}')
         """.format(self.name, self.hqaddress, self.logo_url)
     
-        database.insert_to_db(query)
+        QueryDatabase.insert_to_db(query)
 
     @classmethod
     def get_party_by_name(cls, name):
@@ -34,7 +34,7 @@ class Party:
         query = """
         SELECT * FROM parties WHERE party_name='{}'
         """.format(name)
-        user = database.select_from_database(query)
+        user = QueryDatabase.select_from_database(query)
         return user
 
     @classmethod
@@ -46,7 +46,7 @@ class Party:
         query="""
         SELECT * FROM parties
         """
-        parties = database.select_from_database(query)
+        parties = QueryDatabase.select_from_database(query)
         parties_lst = []
         for party in parties:
             # convert party tuple to a dictionary - which is easily jsonified
@@ -63,12 +63,23 @@ class Party:
 
         query=""" SELECT * FROM parties WHERE party_id='{}'
         """.format(id)
-        party = database.select_from_database(query)
+        party = QueryDatabase.select_from_database(query)
         try:
             party = Party.to_json(party[0])
         except:
             print("no party yet")
         return party
+
+    @staticmethod
+    def update_party(party_name, hqaddress, logo_url, party_id):
+        """
+        Docstring
+        """
+        query = """
+        UPDATE parties SET party_name = '{}', hqaddress = '{}', logo_url = '{}' WHERE parties.party_id = '{}'
+        """.format(party_name, hqaddress, logo_url, party_id)
+
+        QueryDatabase.insert_to_db(query)
 
 
     @classmethod
@@ -84,14 +95,7 @@ class Party:
             query="""
             DELETE FROM parties WHERE parties.party_id='{}' 
             """.format(id)
-            try:
-                conn, cursor = database.connect_db()
-                cursor.execute(query)
-                conn.commit()
-                conn.close()
-            except psycopg2.Error as error:
-                print (error)
-
+            QueryDatabase.insert_to_db(query)
       
 
     @classmethod
@@ -102,6 +106,7 @@ class Party:
         
         """
         return {
+            "id": party_row[0],
             "name": party_row[1],
             "hqaddress": party_row[2],
             "logo_url": party_row[3]
@@ -125,7 +130,7 @@ class Office:
         INSERT INTO offices(office_type, office_name) VALUES(
             '{}', '{}')
         """.format(self.office_type, self.name)
-        database.insert_to_db(query)
+        QueryDatabase.insert_to_db(query)
 
     @classmethod
     def get_office_by_name(cls, name):
@@ -136,7 +141,7 @@ class Office:
         query = """
         SELECT * FROM offices WHERE office_name='{}'
         """.format(name)
-        user = database.select_from_database(query)
+        user = QueryDatabase.select_from_database(query)
         return user
 
 
@@ -149,7 +154,7 @@ class Office:
         query="""
         SELECT * FROM offices
         """
-        offices = database.select_from_database(query)
+        offices = QueryDatabase.select_from_database(query)
         offices_lst = []
         for office in offices:
             # convert party tuple to a dictionary - which is easily jsonified
@@ -166,13 +171,24 @@ class Office:
         """
         query=""" SELECT * FROM offices WHERE office_id='{}'
         """.format(id)
-        office = database.select_from_database(query)
+        office = QueryDatabase.select_from_database(query)
         try:
             office = Office.to_json(office[0])
         except:
 
             print("No office found")
         return office
+
+    @staticmethod
+    def update_office(office_name, office_type, office_id):
+        """
+        Docstring
+        """
+        query = """
+        UPDATE offices SET office_name = '{}', office_type = '{}' WHERE offices.office_id = '{}'
+        """.format(office_name, office_type, office_id)
+
+        QueryDatabase.insert_to_db(query)
 
     @classmethod
     def delete_office(cls, id):
@@ -183,15 +199,9 @@ class Office:
         office = Office.get_office_by_id(id)
         if office:
             query="""
-            DELETE FROM offices WHERE id='{}' 
+            DELETE FROM offices WHERE offices.office_id='{}' 
             """.format(id)
-            try:
-                conn, cursor = database.connect_db()
-                conn.execute(query)
-                conn.commit()
-                conn.close()
-            except psycopg2.Error as error:
-                print (error)
+            QueryDatabase.insert_to_db(query)
     
 
 
@@ -208,7 +218,7 @@ class Office:
         }
 
 class User:
-    def __init__(self, first_name, last_name, username, email, phone_number, passport_url, password):
+    def __init__(self, first_name, last_name, username, email, phone_number, passport_url, password, role):
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
@@ -216,6 +226,7 @@ class User:
         self.phone_number = phone_number
         self.passport_url = passport_url
         self.password = password
+        self.role = role
         # by default a user is not admin
         # requires to be promoted to be admin
         self.is_admin = False
@@ -227,12 +238,11 @@ class User:
         """
 
         query = """
-        INSERT INTO users(firstname, lastname, username, email, password, phoneNumber, passport_url) VALUES(
-            '{}', '{}', '{}', '{}', '{}', '{}', '{}'
-        )""".format(self.first_name, self.last_name, self.username, self.email, self.password, self.phone_number, self.passport_url )
-        
+        INSERT INTO users(firstname, lastname, username, email, password, phoneNumber, passport_url, role) VALUES(
+            '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}'
+        )""".format(self.first_name, self.last_name, self.username, self.email, self.password, self.phone_number, self.passport_url, self.role )
 
-        database.insert_to_db(query)
+        QueryDatabase.insert_to_db(query)
 
     @classmethod
     def get_user_by_phone_number(cls, phone_number):
@@ -245,7 +255,22 @@ class User:
         SELECT * FROM users WHERE users.phoneNumber='{}'
         """.format(phone_number)
 
-        user = database.select_from_database(query)
+        user = QueryDatabase.select_from_database(query)
+        return user
+
+    @classmethod
+    def  get_user_by_username_and_password(cls, username, password):
+        """
+        Get a user by their username
+        :params: user's username
+        :return: user with requested username
+        """
+
+        query = """
+        SELECT * FROM users WHERE username='{}' AND password='{}'
+        """.format(username, password)
+
+        user = QueryDatabase.select_from_database(query)
         return user
 
     @classmethod
@@ -260,8 +285,9 @@ class User:
         SELECT * FROM users WHERE username='{}'
         """.format(username)
 
-        user = database.select_from_database(query)
+        user = QueryDatabase.select_from_database(query)
         return user
+
 
     @classmethod
     def  get_user_by_email(cls, email):
@@ -275,7 +301,7 @@ class User:
         SELECT email FROM users WHERE users.email='{}'
         """.format(email)
 
-        email = database.select_from_database(query)
+        email = QueryDatabase.select_from_database(query)
         return email
 
     @staticmethod
@@ -290,7 +316,7 @@ class User:
         SELECT password FROM users WHERE users.password='{}'
         """.format(password)
 
-        password = database.select_from_database(query)
+        password = QueryDatabase.select_from_database(query)
         return password
     
     def to_json(self, user_row):
@@ -305,7 +331,8 @@ class User:
             "username":  user_row[3],
             "email": user_row[4],
             "phone_number": user_row[6],
-            "passport_url": user_row[7]
+            "passport_url": user_row[7],
+            "role": user_row[7]
         }
 
 class Candidates:
@@ -319,10 +346,10 @@ class Candidates:
         Creates a candidate
         """
         query = """
-        INSERT INTO users(candidate_name, office_id, party_id) VALUES(
+        INSERT INTO candidates(candidate_name, office_id, party_id) VALUES(
             '{}', '{}', '{}'
         )""".format(self.candidate_name, self.office_id, self.party_id)
-        database.insert_to_db(query)
+        QueryDatabase.insert_to_db(query)
 
 
     def does_candidate_exist(candidate_id, office_id):
@@ -337,7 +364,7 @@ class Candidates:
             '{}', '{}'
         )""".format(self.candidate_name, self.office_id)
 
-        candidate= database.select_from_db(query)
+        candidate= QueryDatabase.select_from_db(query)
         return candidate
 
 
@@ -349,7 +376,7 @@ class Candidates:
         INSERT INTO candidates(candidate_name, office_id) VALUES(
             '{}', '{}'
         )""".format(self.candidate_name, self.office_id)
-        database.insert_to_db(query)
+        QueryDatabase.insert_to_db(query)
 
     
 
@@ -387,7 +414,18 @@ class Votes:
         )""".format(self.createdOn, self.createBy, self.candidateVoteFor, self.officeVotedFor)
         
 
-        database.insert_to_db(query)
+        QueryDatabase.insert_to_db(query)
+
+    def check_that_user_has_voted(created_by, officeVotedFor):
+        """
+        """
+        query = """
+        SELECT createdBy, officeVotedFor FROM votes WHERE
+        votes.createdBy = '{}' AND votes.officeVotedFor = '{}'
+        """.format(created_by, officeVotedFor)
+
+        voted = QueryDatabase.insert_to_db(query)
+        return voted
 
 
     def user_vote():
@@ -404,5 +442,13 @@ class Votes:
             "createBy": user_row[2],
             "candidateVoteFor":  user_row[3],
             "officeVotedFor": user_row[4]
-
         }
+        
+# def results():
+#     """
+#         """
+#         query = """
+#         SELECT offices.office_id candidates.candidate_id
+
+#         voted = QueryDatabase.insert_to_db(query)
+#         return voted

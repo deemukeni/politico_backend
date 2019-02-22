@@ -29,6 +29,7 @@ class Partiesv2TestCase(unittest.TestCase):
             "email":"your@them.com",
             "phone_number":"9996857",
             "passport_url":"dsfdd",
+            "role": "candidate",
             "password":"Aaaaaaaaa",
             "confirm_password":"Aaaaaaaaa" 
         }
@@ -40,6 +41,7 @@ class Partiesv2TestCase(unittest.TestCase):
             "email":"your@email.com",
             "phone_number":"0955443",
             "passport_url":"dsfdd",
+            "role": "candidate",
             "password":"Aaaaaaaaa",
             "confirm_password":"Aaaaaaaaa" 
         }
@@ -86,11 +88,6 @@ class Partiesv2TestCase(unittest.TestCase):
             "office_name": "2 office" ,#invalid key - should be logo_url
             "office_type": "head" 
         }
-    # self.client.post("/api/v2/sign-up", data=self.user_signup_1)
-    # self.login_response = self.client.post("/api/v2/signin", data=self.user_signin_1)
-    # self.login_json_resp = json.loads(self.login_response.data.decode("utf-8"))
-    # self.token = self.login_json_resp["token"]
-    # self.headers = {"token_Bearer": self.token}
         
     def login(self):
         """
@@ -116,7 +113,7 @@ class Partiesv2TestCase(unittest.TestCase):
     def test_create_party_rejects_empty_fields(self):
         self.token = self.login()
         response = self.client.post("/api/v2/parties", data=json.dumps(self.party_empty_fields), headers={'token_Bearer':self.token}, content_type="application/json")
-        self.assertEqual(json.loads(response.data)["error"], "invalid input at hqaddress")
+        self.assertEqual(json.loads(response.data)["error"], "hqaddress is required")
         self.assertEqual(response.status_code, 400)
 
     def test_create_party_rejects_incorrect_payload_keys(self):
@@ -133,7 +130,7 @@ class Partiesv2TestCase(unittest.TestCase):
         # # attempt to create the same party again
         response = self.client.post("/api/v2/parties", data=json.dumps(self.party), headers={'token_Bearer':self.token}, content_type="application/json")
         self.assertEqual(json.loads(response.data)["error"], "A party with a similar name exists")
-        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.status_code, 400)
 
     def test_fetch_all_parties_successfully(self):
         self.token = self.login()
@@ -182,7 +179,7 @@ class Partiesv2TestCase(unittest.TestCase):
         self.token = self.login()
         response = self.client.post("/api/v2/offices", data=json.dumps(self.office_empty_fields), headers={'token_Bearer':self.token}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.data)["error"], "All fields are required.")
+        self.assertEqual(json.loads(response.data)["error"], "office_type is required")
         
 
     def test_create_office_rejects_incorrect_payload_keys(self):
@@ -200,7 +197,7 @@ class Partiesv2TestCase(unittest.TestCase):
         # # attempt to create the same party again
         response = self.client.post("/api/v2/offices", data=json.dumps(self.office), headers={'token_Bearer':self.token}, content_type="application/json")
         self.assertEqual(json.loads(response.data)["error"], "An office with a similar name exists")
-        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.status_code, 400)
 
     def test_fetch_all_offices_successfully(self):
         self.token = self.login()
@@ -240,8 +237,7 @@ class Partiesv2TestCase(unittest.TestCase):
         """
         self.app_context.pop()
         self.client = None
-        # initiate_database(os.getenv("DATABASE_TEST_URL"))
-        drop_tables()
+        drop_tables(os.getenv("DATABASE_TEST_URL"))
 
         
 
